@@ -39,13 +39,13 @@ class Extract:
                     file_path=file_path,
                     output_dir=self.output_dir,
                     img_extract_obj=image_extract
-                ).extract(self.as_json)
+                ).extract(as_json=self.as_json)
             elif file_ext in (".png", '.jpg', '.jpeg'):
                 await image.ExtractImage(
                     file_path=file_path,
                     output_dir=self.output_dir,
                     img_extract_obj=image_extract
-                ).extract(self.as_json)
+                ).extract(as_json=self.as_json)
             elif file_ext == ".csv":
                 await csv.ExtractCSV(
                     file_path=file_path,
@@ -59,9 +59,11 @@ class Extract:
 
     async def extract(self):
         input_path = AsyncPath(self.file_path)
-        if input_path.is_dir():
+        if await input_path.is_file():
+            await self.extract_content(input_path)
+        elif await input_path.is_dir():
             async for path in input_path.iterdir():
                 if await path.is_file():
                     await self.extract_content(path)
         else:
-            await self.extract_content(await input_path)
+            pass
