@@ -1,0 +1,6 @@
+langchain
+sentence-transformers
+mysql-connector-python
+df-extract
+boto3
+redshift-connector

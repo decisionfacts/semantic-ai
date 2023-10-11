@@ -10,6 +10,12 @@ def readme():
         return fobj.read()
 
 
+def requirements():
+    requirements_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'requirements.txt')
+    with open(requirements_path) as fobj:
+        return [line.strip('\n') for line in fobj.readlines()]
+
+
 setup(
     name='semantic_ai',
     version='0.0.1',
@@ -20,12 +26,5 @@ setup(
     license='MIT',
     packages=find_packages(exclude=('dhl',)),
     include_package_data=True,
-    install_requires=[
-        'langchain',
-        'sentence-transformers',
-        'mysql-connector-python',
-        'df-extract',
-        'boto3',
-        'redshift-connector'
-    ]
+    install_requires=requirements()
 )
