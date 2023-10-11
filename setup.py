@@ -24,6 +24,8 @@ setup(
         'langchain',
         'sentence-transformers',
         'mysql-connector-python',
-        'df-extract'
+        'df-extract',
+        'boto3',
+        'redshift-connector'
     ]
 )
