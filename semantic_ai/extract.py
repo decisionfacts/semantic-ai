@@ -66,4 +66,4 @@ class Extract:
                 if await path.is_file():
                     await self.extract_content(path)
         else:
-            pass
+            print(f"{input_path} is unsupported")
