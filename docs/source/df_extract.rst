@@ -22,10 +22,10 @@ To extract content from PDF
     extract_pdf = ExtractPDF(file_path=path)
 
     # By default, output as text
-    extract_pdf.extract()  # Output will be located `/home/test/ABC.pdf.txt`
+    await extract_pdf.extract()  # Output will be located `/home/test/ABC.pdf.txt`
 
     # Output as json
-    extract_pdf.extract(as_json=True)  # Output will be located `/home/test/ABC.pdf.json`
+    await extract_pdf.extract(as_json=True)  # Output will be located `/home/test/ABC.pdf.json`
 
 You can change the output directory with simply pass ```output_dir``` param
 
@@ -36,7 +36,7 @@ You can change the output directory with simply pass ```output_dir``` param
     path = "/home/test/ABC.pdf"
 
     extract_pdf = ExtractPDF(file_path=path, output_dir="/home/test/output")
-    extract_pdf.extract()
+    await extract_pdf.extract()
 
 
 Extract content from PDF with image data
@@ -53,4 +53,4 @@ This requires ```easyocr```
 
     image_extract = ImageExtract(model_download_enabled=True)
     extract_pdf = ExtractPDF(file_path=path, image_extract=image_extract)
-    extract_pdf.extract()
+    await extract_pdf.extract()
