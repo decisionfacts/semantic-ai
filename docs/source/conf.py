@@ -38,7 +38,7 @@ html_css_files = ["base.css"]
 html_theme_options = {
     "sidebar_hide_name": True,
     "light_logo": "images/df.png",
-    "dark_logo": "images/df-png",
+    "dark_logo": "images/df.png",
     "light_css_variables": {
         "color-brand-primary": "#7C4DFF",
         "color-brand-content": "#7C4DFF",
