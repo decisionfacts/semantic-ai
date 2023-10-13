@@ -19,9 +19,15 @@ Hope your day's going well. :)
   </div>
   {%- endif %}
   {%- if theme_light_logo and theme_dark_logo %}
-  <div class="sidebar-logo-container">
-    <img class="sidebar-logo only-light" src="{{ pathto('_static/' + theme_light_logo, 1) }}" alt="Light Logo" />
-    <img class="sidebar-logo only-dark" src="{{ pathto('_static/' + theme_dark_logo, 1) }}" alt="Dark Logo" />
+  <div class="sidebar-logo-container sidebar-center">
+    <div class="img-div-side only-light">
+      <img class="header-logo only-light" src="{{ pathto('_static/' + theme_light_logo, 1) }}" alt="Light Logo" />
+      <h4 class="only-light sidebar-h4-light">Semantic AI</h4>
+    </div>
+    <div class="img-div-side only-dark">
+      <img class="header-logo only-dark" src="{{ pathto('_static/' + theme_dark_logo, 1) }}" alt="Dark Logo" />
+      <h4 class="only-dark sidebar-h4-dark">Semantic AI</h4>
+    </div>
   </div>
   {%- endif %}
   {% if not theme_sidebar_hide_name %}

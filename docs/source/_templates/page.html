@@ -42,8 +42,14 @@
           <img class="header-logo" src="{{ logo_url }}" alt="Logo" />
           {%- endif %}
           {%- if theme_light_logo and theme_dark_logo %}
-					<img class="header-logo only-light" src="{{ pathto('_static/' + theme_light_logo, 1) }}" alt="Light Logo" />
-					<img class="header-logo only-dark" src="{{ pathto('_static/' + theme_dark_logo, 1) }}" alt="Dark Logo" />
+          <div class="img-div only-light">
+            <img class="header-logo only-light" src="{{ pathto('_static/' + theme_light_logo, 1) }}" alt="Light Logo" />
+            <span class="only-light">Semantic AI</span>
+          </div>
+          <div class="img-div only-dark d-flex">
+            <img class="header-logo only-dark" src="{{ pathto('_static/' + theme_dark_logo, 1) }}" alt="Dark Logo" />
+            <span class="only-dark">Semantic AI</span>
+          </div>
           {%- endif %}
         </div>
       </a>
@@ -143,7 +149,7 @@
         </div>
         <article role="main">
           <div class="social social--main" style="margin-top: 1em; display: flex; justify-content: right; gap: 8px">
-            <a href="https://join.slack.com/t/unstructuredw-kbe4326/shared_invite/zt-23kciff0y-bvzXxJkgtbXe5POo_rxMkw"
+            <a href=""
               class="button--primary" target="_blank">Join <span aria-label="slack"
                 class="slack-icon"></span></span></a>
             <div class="github-stars github-stars--top-page"></div>
