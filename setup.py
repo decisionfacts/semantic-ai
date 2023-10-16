@@ -18,11 +18,11 @@ def requirements():
 
 setup(
     name='semantic_ai',
-    version='0.0.1',
-    description='Utils for decisionforce extract',
+    version='1.0.0',
+    description='Sematic AI RAG System',
     long_description=readme(),
-    author='DecisionForce',
-    author_email='info@decisionforce.io',
+    author='DecisionFacts',
+    author_email='info@decisionfacts.io',
     license='MIT',
     packages=find_packages(exclude=('dhl',)),
     include_package_data=True,
