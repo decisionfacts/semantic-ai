@@ -13,9 +13,9 @@ class HFEmbeddings(BaseModel, BaseEmbeddings):
         To use, you should have the ``sentence_transformers`` python package installed.
 
         Example:
-            .. code-block:: python
+            . code-block:: python
 
-                from langchain.embeddings import HuggingFaceEmbeddings
+                from semantic.embeddings.huggingface import HFEmbeddings
 
                 model_name = "sentence-transformers/all-mpnet-base-v2"
                 model_kwargs = {'device': 'cpu'}
