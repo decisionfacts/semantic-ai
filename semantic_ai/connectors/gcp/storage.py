@@ -1,19 +1,23 @@
 from abc import ABC
 
-from google.cloud import bigquery
+from google.cloud import storage
 from google.oauth2 import service_account
 
 from semantic_ai.connectors.base import BaseConnectors
 
 
-class BigQuery(BaseConnectors, ABC):
+class GCPStorage(BaseConnectors, ABC):
 
-    def connect(self, info):
+    def connect(self, info, bucket_name):
+
         if isinstance(info, str):
             credentials = service_account.Credentials.from_service_account_file(info)
-            return credentials
         elif isinstance(info, dict):
             credentials = service_account.Credentials.from_service_account_info(info)
-            return credentials
         else:
             raise ValueError(f"{info} is not supported type. Please give json format or give json file path as string")
+
+        storage_client = storage.Client(
+            credentials=credentials
+        )
+        return storage_client.get_bucket(bucket_name)

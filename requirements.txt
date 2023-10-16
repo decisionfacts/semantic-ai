@@ -2,5 +2,8 @@ langchain
 sentence-transformers
 mysql-connector-python
 df-extract
-boto3
+boto3~=1.21.20
 redshift-connector
+google-auth
+google-cloud-bigquery
+google-cloud-storage
