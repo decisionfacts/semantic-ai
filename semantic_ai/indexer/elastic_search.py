@@ -5,9 +5,10 @@ from typing import (
 )
 from semantic_ai.embeddings.base import BaseEmbeddings
 from langchain.vectorstores import ElasticVectorSearch
+from semantic_ai.indexer.base import BaseIndexer
 
 
-class ElasticSearchIndexer:
+class ElasticSearchIndexer(BaseIndexer):
 
     def __init__(
             self,
