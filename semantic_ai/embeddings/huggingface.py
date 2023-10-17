@@ -43,13 +43,14 @@ class HFEmbeddings(BaseModel, BaseEmbeddings):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def embed(self):
+    def embed(self, **kwargs):
         embeddings = HuggingFaceEmbeddings(
             client=self.client,
             model_name=self.model_name,
             cache_folder=self.cache_folder,
             model_kwargs=self.model_kwargs,
             encode_kwargs=self.encode_kwargs,
-            multi_process=self.multi_process
+            multi_process=self.multi_process,
+            **kwargs
         )
         return embeddings

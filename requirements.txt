@@ -7,3 +7,5 @@ redshift-connector
 google-auth
 google-cloud-bigquery
 google-cloud-storage
+elasticsearch==8.8.2
+qdrant-client==1.3.2
