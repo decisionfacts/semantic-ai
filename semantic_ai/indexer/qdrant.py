@@ -4,9 +4,10 @@ from langchain.vectorstores import Qdrant
 from qdrant_client import QdrantClient
 
 from semantic_ai.embeddings.base import BaseEmbeddings
+from semantic_ai.indexer.base import BaseIndexer
 
 
-class QdrantIndexer:
+class QdrantIndexer(BaseIndexer):
     """Create qdrant indexer and create client object
 
         Args:
