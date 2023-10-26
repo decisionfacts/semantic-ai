@@ -3,23 +3,27 @@ from typing import (
     Dict,
     Optional
 )
-from semantic_ai.embeddings.base import BaseEmbeddings
+from langchain.embeddings.base import Embeddings
 from langchain.vectorstores import ElasticVectorSearch
+from langchain.embeddings.huggingface import HuggingFaceEmbeddings
+
 from semantic_ai.indexer.base import BaseIndexer
+from semantic_ai.indexer.config import settings
 
 
 class ElasticSearchIndexer(BaseIndexer):
 
     def __init__(
             self,
-            elasticsearch_url: str,
             index_name: str,
-            embedding: BaseEmbeddings,
+            url: str = settings.ELASTIC_SEARCH_URL,
+            embedding: Optional[Embeddings] = HuggingFaceEmbeddings(),
             ssl_verify: Optional[Dict[str, Any]] = None
     ):
+        super().__init__()
         self.client = ElasticVectorSearch(
             embedding=embedding,
-            elasticsearch_url=elasticsearch_url,
+            elasticsearch_url=url,
             index_name=f"{index_name}",
             ssl_verify=ssl_verify
         )

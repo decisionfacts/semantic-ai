@@ -3,9 +3,10 @@ sentence-transformers
 mysql-connector-python
 df-extract
 boto3~=1.21.20
-redshift-connector
 google-auth
 google-cloud-bigquery
 google-cloud-storage
 elasticsearch==8.8.2
 qdrant-client==1.3.2
+azure-storage-file-datalake
+azure.data.tables

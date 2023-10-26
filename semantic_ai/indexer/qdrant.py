@@ -3,8 +3,11 @@ from typing import Optional, Any
 from langchain.vectorstores import Qdrant
 from qdrant_client import QdrantClient
 
-from semantic_ai.embeddings.base import BaseEmbeddings
+from langchain.embeddings.base import Embeddings
+from langchain.embeddings.huggingface import HuggingFaceEmbeddings
+
 from semantic_ai.indexer.base import BaseIndexer
+from semantic_ai.indexer.config import settings
 
 
 class QdrantIndexer(BaseIndexer):
@@ -48,19 +51,19 @@ class QdrantIndexer(BaseIndexer):
     VECTOR_NAME = None
 
     def __init__(self,
-                 collection_name: str,
-                 embeddings: Optional[BaseEmbeddings] = None,
+                 index_name: str,
+                 embedding: Optional[Embeddings] = HuggingFaceEmbeddings(),
                  content_payload_key: str = CONTENT_KEY,
                  metadata_payload_key: str = METADATA_KEY,
                  distance_strategy: str = "COSINE",
                  vector_name: Optional[str] = VECTOR_NAME,
                  location: Optional[str] = None,
-                 url: Optional[str] = None,
+                 url: Optional[str] = settings.QDRANT_URL,
                  port: Optional[int] = 6333,
                  grpc_port: int = 6334,
                  prefer_grpc: bool = False,
                  https: Optional[bool] = None,
-                 api_key: Optional[str] = None,
+                 api_key: Optional[str] = settings.QDRANT_API_KEY,
                  prefix: Optional[str] = None,
                  timeout: Optional[float] = None,
                  host: Optional[str] = None,
@@ -78,8 +81,8 @@ class QdrantIndexer(BaseIndexer):
         self.timeout = timeout
         self.host = host
         self.path = path
-        self.collection_name = collection_name
-        self.embeddings = embeddings
+        self.collection_name = index_name
+        self.embeddings = embedding
         self.content_payload_key = content_payload_key
         self.metadata_payload_key = metadata_payload_key
         self.distance_strategy = distance_strategy

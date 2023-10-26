@@ -3,12 +3,13 @@ from abc import ABC
 from google.cloud import storage
 from google.oauth2 import service_account
 
+from semantic_ai.utils import sync_to_async
 from semantic_ai.connectors.base import BaseConnectors
 
 
 class GCPStorage(BaseConnectors, ABC):
 
-    def connect(self, info, bucket_name):
+    async def connect(self, info, bucket_name):
 
         if isinstance(info, str):
             credentials = service_account.Credentials.from_service_account_file(info)
@@ -20,4 +21,6 @@ class GCPStorage(BaseConnectors, ABC):
         storage_client = storage.Client(
             credentials=credentials
         )
-        return storage_client.get_bucket(bucket_name)
+        return await sync_to_async(storage_client.get_bucket,
+                                   bucket_or_name=bucket_name
+                                   )
