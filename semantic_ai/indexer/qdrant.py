@@ -103,7 +103,7 @@ class QdrantIndexer(BaseIndexer):
             **kwargs
         )
 
-    def create(self) -> Qdrant:
+    async def create(self) -> Qdrant:
         return Qdrant(
             client=self.client,
             collection_name=self.collection_name,

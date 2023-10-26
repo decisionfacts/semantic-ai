@@ -28,5 +28,5 @@ class ElasticSearchIndexer(BaseIndexer):
             ssl_verify=ssl_verify
         )
 
-    def create(self):
+    async def create(self):
         return self.client

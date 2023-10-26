@@ -43,7 +43,7 @@ class HFEmbeddings(BaseModel, BaseEmbeddings):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def embed(self, **kwargs):
+    async def embed(self, **kwargs):
         embeddings = HuggingFaceEmbeddings(
             client=self.client,
             model_name=self.model_name,

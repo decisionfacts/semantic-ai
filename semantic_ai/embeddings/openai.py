@@ -44,7 +44,7 @@ class OpenAIEmbeddings(BaseModel, BaseEmbeddings):
     ):
         super().__init__(**kwargs)
 
-    def embed(self):
+    async def embed(self):
         embeddings = OpenAI_Embed(
             client=self.client,
             model=self.model_name,
