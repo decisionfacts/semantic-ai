@@ -58,12 +58,10 @@ class QdrantIndexer(BaseIndexer):
                  distance_strategy: str = "COSINE",
                  vector_name: Optional[str] = VECTOR_NAME,
                  location: Optional[str] = None,
-                 url: Optional[str] = settings.QDRANT_URL,
                  port: Optional[int] = 6333,
                  grpc_port: int = 6334,
                  prefer_grpc: bool = False,
                  https: Optional[bool] = None,
-                 api_key: Optional[str] = settings.QDRANT_API_KEY,
                  prefix: Optional[str] = None,
                  timeout: Optional[float] = None,
                  host: Optional[str] = None,
@@ -71,12 +69,12 @@ class QdrantIndexer(BaseIndexer):
                  **kwargs: Any,
                  ):
         self.location = location
-        self.url = url
+        self.url = settings.QDRANT_URL
         self.port = port
         self.grpc_port = grpc_port
         self.prefer_grpc = prefer_grpc
         self.https = https
-        self.api_key = api_key
+        self.api_key = settings.QDRANT_API_KEY
         self.prefix = prefix
         self.timeout = timeout
         self.host = host

@@ -2,6 +2,10 @@ import os
 
 from pydantic.v1 import BaseSettings
 
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
+
 
 class Settings(BaseSettings):
 

@@ -14,20 +14,16 @@ class SharePoint(BaseConnectors, ABC):
 
     def __init__(self,
                  scope: str,
-                 host_name: str = settings.SHARE_POINT_HOST_NAME,
-                 client_id: str = settings.SHARE_POINT_CLIENT_ID,
-                 client_secret: str = settings.SHARE_POINT_CLIENT_SECRET,
-                 tenant_id: str = settings.SHARE_POINT_TENANT_ID,
                  grant_type: str = "client_credentials",
                  output_dir: str = None,
                  ):
-        self.client_id = client_id
-        self.client_secret = client_secret
+        self.client_id = settings.SHARE_POINT_CLIENT_ID
+        self.client_secret = settings.SHARE_POINT_CLIENT_SECRET
         self.grant_type = grant_type
         self.local_dir = output_dir
         self.scope = scope
-        self.tenant_id = tenant_id
-        self.host_name = host_name
+        self.tenant_id = settings.SHARE_POINT_TENANT_ID
+        self.host_name = settings.SHARE_POINT_HOST_NAME
 
         if not self.local_dir:
             dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -36,20 +32,20 @@ class SharePoint(BaseConnectors, ABC):
         if not isExist:
             os.makedirs(self.local_dir)
 
-    async def connect(self, site_name):
+    async def connect(self, site_name) -> dict:
         site_id_url = f"{SITE_URL}/{self.host_name}:/sites/{site_name}"
-        site_object = await self.make_request(site_id_url)
+        site_object = await self.__make_request(site_id_url)
         return site_object
 
-    async def make_request(self, url):
+    async def __make_request(self, url):
         headers = {
-            'Authorization': 'Bearer {}'.format(await self.get_access_token())
+            'Authorization': 'Bearer {}'.format(await self.__get_access_token())
         }
         async with httpx.AsyncClient() as cli:
             r = await cli.get(url, headers=headers)
         return await sync_to_async(r.json)
 
-    async def get_access_token(self):
+    async def __get_access_token(self):
         token_request_uri = MICROSOFT_OAUTH_URL.format(self.tenant_id)
         data = {
             'client_id': self.client_id,
@@ -66,18 +62,18 @@ class SharePoint(BaseConnectors, ABC):
         access_token = token_response.get('access_token')
         return access_token
 
-    async def get_driver_id_list(self, site_id):
+    async def list_drives(self, site_id):
         drive_uri = f'{SITE_URL}/{site_id}/drives'
-        drives = await self.make_request(drive_uri)
+        drives = await self.__make_request(drive_uri)
         return drives
 
-    async def get_folder_list(self, site_id, drive_id):
+    async def list_folders(self, site_id, drive_id):
         folder_list_url = f"{SITE_URL}/{site_id}/drives/{drive_id}/root/children"
-        folder = await self.make_request(folder_list_url)
+        folder = await self.__make_request(folder_list_url)
         return folder
 
-    async def get_site_id_list(self):
-        sites = await self.make_request(SITE_URL)
+    async def list_sites(self):
+        sites = await self.__make_request(SITE_URL)
         return sites
 
     async def download_file(self, file_name, file_download):
@@ -103,5 +99,5 @@ class SharePoint(BaseConnectors, ABC):
                                             folder_name,
                                             ):
         folder_url = f"{SITE_URL}/{site_id}/drives/{drive_id}/root:/{folder_name}:/children"
-        items = await self.make_request(folder_url)
+        items = await self.__make_request(folder_url)
         await self.iterate_items(items)
