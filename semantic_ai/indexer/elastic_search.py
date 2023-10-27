@@ -8,13 +8,13 @@ from langchain.vectorstores import ElasticVectorSearch
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 
 from semantic_ai.indexer.base import BaseIndexer
-from semantic_ai.indexer.config import settings
 
 
 class ElasticSearchIndexer(BaseIndexer):
 
     def __init__(
             self,
+            url: str,
             index_name: str,
             embedding: Optional[Embeddings] = HuggingFaceEmbeddings(),
             ssl_verify: Optional[Dict[str, Any]] = None
@@ -22,7 +22,7 @@ class ElasticSearchIndexer(BaseIndexer):
         super().__init__()
         self.client = ElasticVectorSearch(
             embedding=embedding,
-            elasticsearch_url=settings.ELASTIC_SEARCH_URL,
+            elasticsearch_url=url,
             index_name=f"{index_name}",
             ssl_verify=ssl_verify
         )

@@ -3,7 +3,6 @@ from abc import ABC
 
 from semantic_ai.utils import sync_to_async, iter_to_aiter
 from semantic_ai.connectors.base import BaseConnectors
-from semantic_ai.connectors.config import settings
 
 MICROSOFT_OAUTH_URL = "https://login.microsoftonline.com/{}/oauth2/v2.0/token"
 SITE_URL = "https://graph.microsoft.com/v1.0/sites"
@@ -13,17 +12,21 @@ DEFAULT_FOLDER_NAME = "output"
 class SharePoint(BaseConnectors, ABC):
 
     def __init__(self,
+                 client_id: str,
+                 client_secret: str,
                  scope: str,
+                 tenant_id: str,
+                 host_name: str,
                  grant_type: str = "client_credentials",
                  output_dir: str = None,
                  ):
-        self.client_id = settings.SHARE_POINT_CLIENT_ID
-        self.client_secret = settings.SHARE_POINT_CLIENT_SECRET
+        self.client_id = client_id
+        self.client_secret = client_secret
         self.grant_type = grant_type
         self.local_dir = output_dir
         self.scope = scope
-        self.tenant_id = settings.SHARE_POINT_TENANT_ID
-        self.host_name = settings.SHARE_POINT_HOST_NAME
+        self.tenant_id = tenant_id
+        self.host_name = host_name
 
         if not self.local_dir:
             dir_path = os.path.dirname(os.path.realpath(__file__))
