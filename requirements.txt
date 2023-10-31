@@ -10,3 +10,4 @@ elasticsearch==8.8.2
 qdrant-client==1.3.2
 azure-storage-file-datalake
 azure.data.tables
+jq

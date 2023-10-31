@@ -3,22 +3,23 @@ from abc import ABC
 
 from semantic_ai.utils import sync_to_async, iter_to_aiter
 from semantic_ai.connectors.base import BaseConnectors
+from semantic_ai.constants import DEFAULT_FOLDER_NAME
 
 MICROSOFT_OAUTH_URL = "https://login.microsoftonline.com/{}/oauth2/v2.0/token"
 SITE_URL = "https://graph.microsoft.com/v1.0/sites"
-DEFAULT_FOLDER_NAME = "output"
 
 
-class SharePoint(BaseConnectors, ABC):
+class Sharepoint(BaseConnectors, ABC):
 
     def __init__(self,
+                 *,
                  client_id: str,
                  client_secret: str,
                  scope: str,
                  tenant_id: str,
                  host_name: str,
                  grant_type: str = "client_credentials",
-                 output_dir: str = None,
+                 output_dir: str = None
                  ):
         self.client_id = client_id
         self.client_secret = client_secret
@@ -29,8 +30,9 @@ class SharePoint(BaseConnectors, ABC):
         self.host_name = host_name
 
         if not self.local_dir:
-            dir_path = os.path.dirname(os.path.realpath(__file__))
-            self.local_dir = f"{dir_path}/{DEFAULT_FOLDER_NAME}"
+            dir_path = os.getcwd().split('/')
+            download_path = "/".join(dir_path)
+            self.local_dir = f"{download_path}/{DEFAULT_FOLDER_NAME}"
         isExist = os.path.exists(self.local_dir)
         if not isExist:
             os.makedirs(self.local_dir)
@@ -79,7 +81,7 @@ class SharePoint(BaseConnectors, ABC):
         sites = await self.__make_request(SITE_URL)
         return sites
 
-    async def download_file(self, file_name, file_download):
+    async def file_download(self, file_name, file_download):
         async with httpx.AsyncClient() as client:
             response = await client.get(file_download)
         save_to_path = os.path.join(self.local_dir, file_name)
@@ -87,20 +89,28 @@ class SharePoint(BaseConnectors, ABC):
             await f.write(response.content)
 
     async def iterate_items(self, items):
+        count = 0
         async for file in iter_to_aiter(items.get('value', [])):
+            # if count < 1:
             folder = file.get('folder')
             if folder is None:
                 file_name = file.get('name')
                 file_download = file.get('@microsoft.graph.downloadUrl')
-                await self.download_file(file_name, file_download)
+                await self.file_download(file_name, file_download)
             else:
                 pass
+            # count += 1
+            # else:
+            #     break
 
-    async def file_download_specific_folder(self,
-                                            site_id,
-                                            drive_id,
-                                            folder_name,
-                                            ):
-        folder_url = f"{SITE_URL}/{site_id}/drives/{drive_id}/root:/{folder_name}:/children"
+    async def download(self,
+                       site_id,
+                       drive_id,
+                       folder_url: str = None,
+                       ):
+        if not folder_url:
+            raise ValueError(f"Please give valid folder url path for which folder download. e.g. /Myfolder/child/")
+        url = folder_url.strip('/')
+        folder_url = f"{SITE_URL}/{site_id}/drives/{drive_id}/root:/{url}:/children"
         items = await self.__make_request(folder_url)
         await self.iterate_items(items)

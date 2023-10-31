@@ -1,4 +1,5 @@
 from typing import Optional, Any
+from aiopath import AsyncPath
 
 from langchain.vectorstores import Qdrant
 from qdrant_client import QdrantClient
@@ -7,6 +8,7 @@ from langchain.embeddings.base import Embeddings
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 
 from semantic_ai.indexer.base import BaseIndexer
+from semantic_ai.utils import file_process, check_isfile, iter_to_aiter
 
 
 class QdrantIndexer(BaseIndexer):
@@ -112,3 +114,55 @@ class QdrantIndexer(BaseIndexer):
             distance_strategy=self.distance_strategy,
             vector_name=self.vector_name
         )
+
+    @staticmethod
+    async def from_documents(extracted_json_dir):
+        if extracted_json_dir:
+            datas = []
+            dir_path = AsyncPath(extracted_json_dir)
+            if await dir_path.is_file():
+                file_path = str(dir_path)
+                file_ext = dir_path.suffix.lower()
+                data = await file_process(file_ext=file_ext, file_path=file_path)
+                return data
+            elif await dir_path.is_dir():
+                async for path in dir_path.iterdir():
+                    if await path.is_file():
+                        file_path = str(path)
+                        file_ext = path.suffix.lower()
+                        _data = await file_process(file_ext=file_ext, file_path=file_path)
+                        datas.append(_data)
+                    else:
+                        pass
+                return datas
+        else:
+            raise ValueError(f"Please give valid file or directory path.")
+
+    async def index(self, extracted_json_dir: str):
+        if extracted_json_dir:
+            documents = await self.from_documents(extracted_json_dir)
+            if await check_isfile(extracted_json_dir):
+                try:
+                    await Qdrant.afrom_documents(
+                        documents=documents,
+                        embedding=self.embeddings,
+                        url=self.url,
+                        api_key=self.api_key,
+                        collection_name=self.collection_name
+                    )
+                except Exception as ex:
+                    print(f"{ex}")
+            else:
+                try:
+                    async for docs in iter_to_aiter(documents):
+                        await Qdrant.afrom_documents(
+                            documents=docs,
+                            embedding=self.embeddings,
+                            url=self.url,
+                            api_key=self.api_key,
+                            collection_name=self.collection_name
+                        )
+                except Exception as ex:
+                    print(f"{ex}")
+        else:
+            raise ValueError(f"Please give valid file or directory path.")

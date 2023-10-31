@@ -1,37 +1,20 @@
-from semantic_ai.indexer.constants import (
-    ELASTIC_SEARCH,
-    QDRANT
-)
-from semantic_ai.indexer.elastic_search import ElasticSearchIndexer
+from semantic_ai.indexer.elastic_search import ElasticsearchIndexer
 from semantic_ai.indexer.qdrant import QdrantIndexer
 
+from semantic_ai.utils import get_dynamic_class
+from semantic_ai.constants import INDEXER_LIST
+
 __all__ = [
-    "ElasticSearchIndexer",
+    "ElasticsearchIndexer",
     "QdrantIndexer"
 ]
 
 
-def source_name_list():
-    list_ = [
-        ELASTIC_SEARCH,
-        QDRANT
-    ]
-    return list_
-
-
-class Indexer:
-
-    def __init__(self, source_name: str, *args, **kwargs):
-        self.source_name = source_name
-        if self.source_name == ELASTIC_SEARCH:
-            self.client = ElasticSearchIndexer(*args, **kwargs)
-        elif self.source_name == QDRANT:
-            self.client = QdrantIndexer(*args, **kwargs)
-        else:
-            raise ValueError(
-                f"Source name is not valid. Please give the following source name and that credentials -> "
-                f"{source_name_list()}"
-            )
-
-    def create(self):
-        return self.client.create()
+async def get_indexer(index_type: str, **kwargs):
+    if index_type not in INDEXER_LIST:
+        raise ValueError(f"Please give the below following index type.{INDEXER_LIST}")
+    indexer_cls = await get_dynamic_class(
+        class_name=f"{index_type.capitalize()}Indexer",
+        module_name=f"semantic_ai.indexer"
+    )
+    return indexer_cls(**kwargs)
