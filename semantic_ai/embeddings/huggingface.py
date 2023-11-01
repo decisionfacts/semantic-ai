@@ -1,13 +1,13 @@
 from typing import Any, Dict, Optional
 
-from langchain.pydantic_v1 import BaseModel, Field
+from langchain.pydantic_v1 import Field
 from langchain.embeddings import HuggingFaceEmbeddings
 from semantic_ai.embeddings.base import BaseEmbeddings
 
 DEFAULT_MODEL_NAME = "sentence-transformers/all-mpnet-base-v2"
 
 
-class HFEmbeddings(BaseModel, BaseEmbeddings):
+class HFEmbeddings(BaseEmbeddings):
     """HuggingFace sentence_transformers embedding models.
 
         To use, you should have the ``sentence_transformers`` python package installed.

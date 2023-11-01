@@ -6,12 +6,12 @@ from typing import (
     Union,
 )
 
-from langchain.pydantic_v1 import BaseModel, Field
+from langchain.pydantic_v1 import Field
 from semantic_ai.embeddings.base import BaseEmbeddings
 from langchain.embeddings.openai import OpenAIEmbeddings as OpenAI_Embed
 
 
-class OpenAIEmbeddings(BaseModel, BaseEmbeddings):
+class OpenAIEmbeddings(BaseEmbeddings):
     """OpenAI embedding models.
 
         To use, you should have the ``openai`` python package installed, and the
@@ -26,7 +26,7 @@ class OpenAIEmbeddings(BaseModel, BaseEmbeddings):
         """
 
     client: Any = None  #: :meta private:
-    model: str = "text-embedding-ada-002"
+    model_name: str = "text-embedding-ada-002"
     embedding_ctx_length: int = 8191
     """The maximum number of tokens to embed at once."""
     openai_api_key: Optional[str] = None

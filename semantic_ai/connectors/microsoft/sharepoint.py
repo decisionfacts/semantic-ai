@@ -1,15 +1,16 @@
-import httpx, aiofiles, os
-from abc import ABC
+import aiofiles
+import httpx
+import os
 
-from semantic_ai.utils import sync_to_async, iter_to_aiter
 from semantic_ai.connectors.base import BaseConnectors
 from semantic_ai.constants import DEFAULT_FOLDER_NAME
+from semantic_ai.utils import sync_to_async, iter_to_aiter
 
 MICROSOFT_OAUTH_URL = "https://login.microsoftonline.com/{}/oauth2/v2.0/token"
 SITE_URL = "https://graph.microsoft.com/v1.0/sites"
 
 
-class Sharepoint(BaseConnectors, ABC):
+class Sharepoint(BaseConnectors):
 
     def __init__(self,
                  *,
@@ -18,24 +19,24 @@ class Sharepoint(BaseConnectors, ABC):
                  scope: str,
                  tenant_id: str,
                  host_name: str,
-                 grant_type: str = "client_credentials",
+                 grant_type: str,
                  output_dir: str = None
                  ):
         self.client_id = client_id
         self.client_secret = client_secret
-        self.grant_type = grant_type
-        self.local_dir = output_dir
+        self.grant_type = grant_type or "client_credentials"
+        self.output_dir = output_dir
         self.scope = scope
         self.tenant_id = tenant_id
         self.host_name = host_name
 
-        if not self.local_dir:
+        if not self.output_dir:
             dir_path = os.getcwd().split('/')
             download_path = "/".join(dir_path)
-            self.local_dir = f"{download_path}/{DEFAULT_FOLDER_NAME}"
-        isExist = os.path.exists(self.local_dir)
-        if not isExist:
-            os.makedirs(self.local_dir)
+            self.output_dir = f"{download_path}/{DEFAULT_FOLDER_NAME}"
+        is_exist = os.path.exists(self.output_dir)
+        if not is_exist:
+            os.makedirs(self.output_dir)
 
     async def connect(self, site_name) -> dict:
         site_id_url = f"{SITE_URL}/{self.host_name}:/sites/{site_name}"
@@ -84,7 +85,7 @@ class Sharepoint(BaseConnectors, ABC):
     async def file_download(self, file_name, file_download):
         async with httpx.AsyncClient() as client:
             response = await client.get(file_download)
-        save_to_path = os.path.join(self.local_dir, file_name)
+        save_to_path = os.path.join(self.output_dir, file_name)
         async with aiofiles.open(save_to_path, "wb") as f:
             await f.write(response.content)
 
@@ -110,7 +111,10 @@ class Sharepoint(BaseConnectors, ABC):
                        ):
         if not folder_url:
             raise ValueError(f"Please give valid folder url path for which folder download. e.g. /Myfolder/child/")
-        url = folder_url.strip('/')
-        folder_url = f"{SITE_URL}/{site_id}/drives/{drive_id}/root:/{url}:/children"
-        items = await self.__make_request(folder_url)
-        await self.iterate_items(items)
+        try:
+            url = folder_url.strip('/')
+            folder_url = f"{SITE_URL}/{site_id}/drives/{drive_id}/root:/{url}:/children"
+            items = await self.__make_request(folder_url)
+            _download = await self.iterate_items(items)
+        except Exception as ex:
+            print(f"{ex}")
