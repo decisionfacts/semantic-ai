@@ -6,7 +6,8 @@ from semantic_ai.constants import INDEXER_LIST
 
 __all__ = [
     "ElasticsearchIndexer",
-    "QdrantIndexer"
+    "QdrantIndexer",
+    "get_indexer"
 ]
 
 

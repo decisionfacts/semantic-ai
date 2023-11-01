@@ -4,7 +4,8 @@ from semantic_ai.utils import get_dynamic_class
 from semantic_ai.constants import CONNECTORS_LIST
 
 __all__ = [
-    'Sharepoint'
+    'Sharepoint',
+    'get_connectors'
 ]
 
 

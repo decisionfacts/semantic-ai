@@ -1,8 +1,6 @@
 from aiopath import AsyncPath
 
 from typing import (
-    Any,
-    Dict,
     Optional
 )
 
@@ -22,13 +20,13 @@ class ElasticsearchIndexer(BaseIndexer):
             url: str,
             index_name: str,
             embedding: Optional[Embeddings] = HuggingFaceEmbeddings(),
-            ssl_verify: Optional[Dict[str, Any]] = None
+            ssl_verify: bool = True
     ):
         super().__init__()
         self.url = url
         self.index_name = index_name
         self.embeddings = embedding
-        self.ssl_verify = ssl_verify
+        self.ssl_verify = {"verify_certs": ssl_verify}
 
     async def create(self) -> ElasticVectorSearch:
         obj = ElasticVectorSearch(
