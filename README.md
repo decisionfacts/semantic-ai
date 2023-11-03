@@ -46,6 +46,10 @@ Method 1:
 %load_ext dotenv
 %dotenv
 %dotenv relative/or/absolute/path/to/.env
+
+(or)
+
+dotenv -f .env run -- python
 ```
 Method 2:
 ```python
@@ -61,13 +65,8 @@ import semantic_ai
 
 ### 2. To download the files from given source, extract the content from the downloaded files and index the extracted data in the given vector db.
 ```python
-async def main():
-    await semantic_ai.download()
-    await semantic_ai.extract()
-    await semantic_ai.index()
-    
-
-if __name__ == "__main__":
-    asyncio.create_task(main())
+await semantic_ai.download()
+await semantic_ai.extract()
+await semantic_ai.index()
 ```
 Suppose the job is running in longtime, we can watch the number of file processed, number of file failed and that filename stored in text file which are processed and failed in the 'EXTRACTED_DIR_PATH/meta' directory.
