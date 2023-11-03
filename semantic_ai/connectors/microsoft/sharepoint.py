@@ -16,16 +16,17 @@ logger = logging.getLogger(__name__)
 
 class Sharepoint(BaseConnectors):
 
-    def __init__(self,
-                 *,
-                 client_id: str,
-                 client_secret: str,
-                 scope: str,
-                 tenant_id: str,
-                 host_name: str,
-                 grant_type: str | None = None,
-                 output_dir: str | None = None
-                 ):
+    def __init__(
+            self,
+            *,
+            client_id: str,
+            client_secret: str,
+            scope: str,
+            tenant_id: str,
+            host_name: str,
+            grant_type: str | None = None,
+            output_dir: str | None = None
+    ):
         self.client_id = client_id
         self.client_secret = client_secret
         self.grant_type = grant_type or "client_credentials"
@@ -112,11 +113,12 @@ class Sharepoint(BaseConnectors):
             else:
                 break
 
-    async def download(self,
-                       site_id,
-                       drive_id,
-                       folder_url: str = None,
-                       ):
+    async def download(
+            self,
+            site_id,
+            drive_id,
+            folder_url: str = None,
+    ):
         if not folder_url:
             raise ValueError(f"Please give valid folder url path for which folder download. e.g. /Myfolder/child/")
         try:
