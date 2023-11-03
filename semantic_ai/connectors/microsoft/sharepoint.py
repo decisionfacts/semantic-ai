@@ -99,19 +99,14 @@ class Sharepoint(BaseConnectors):
                         await f.write(chunk)
 
     async def iterate_items(self, items):
-        count = 0
         async for file in iter_to_aiter(items.get('value', [])):
-            if count < 1:
-                folder = file.get('folder')
-                if folder is None:
-                    file_name = file.get('name')
-                    file_download = file.get('@microsoft.graph.downloadUrl')
-                    await self.file_download(file_name, file_download)
-                else:
-                    pass
-                count += 1
+            folder = file.get('folder')
+            if folder is None:
+                file_name = file.get('name')
+                file_download = file.get('@microsoft.graph.downloadUrl')
+                await self.file_download(file_name, file_download)
             else:
-                break
+                pass
 
     async def download(
             self,

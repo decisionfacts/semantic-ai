@@ -16,23 +16,24 @@ logger = logging.getLogger(__name__)
 
 
 async def download():
-    print("Process started")
     logger.info(f"Initiated download process")
-    print(settings.connectors)
     async for connector in iter_to_aiter(settings.connectors):
-        if connector.connector_type == SHARE_POINT:
-            sharepoint: Sharepoint = connector
-            _download = await get_connectors(sharepoint.connector_type,
-                                             client_id=sharepoint.client_id,
-                                             client_secret=sharepoint.client_secret,
-                                             tenant_id=sharepoint.tenant_id,
-                                             host_name=sharepoint.host_name,
-                                             scope=sharepoint.scope
-                                             )
-            logger.info(f"{sharepoint.connector_type.capitalize()} object created")
-            await _download.download(site_id=sharepoint.site_id,
-                                     drive_id=sharepoint.drive_id,
-                                     folder_url=sharepoint.folder_url)
+        if connector.connector_type:
+            if connector.connector_type == SHARE_POINT:
+                sharepoint: Sharepoint = connector
+                _download = await get_connectors(sharepoint.connector_type,
+                                                 client_id=sharepoint.client_id,
+                                                 client_secret=sharepoint.client_secret,
+                                                 tenant_id=sharepoint.tenant_id,
+                                                 host_name=sharepoint.host_name,
+                                                 scope=sharepoint.scope
+                                                 )
+                logger.info(f"{sharepoint.connector_type.capitalize()} object created")
+                await _download.download(site_id=sharepoint.site_id,
+                                         drive_id=sharepoint.drive_id,
+                                         folder_url=sharepoint.folder_url)
+        else:
+            raise ValueError(f"Give valid credentials or load properly environment variable.")
 
 
 async def extract():
@@ -53,14 +54,17 @@ async def index():
     logger.info(f"Index starting")
     extracted_output_dir = ""
     async for _indexer in iter_to_aiter(settings.indexer):
-        extracted_output_dir = _indexer.extracted_dir_path
-        extracted_output_dir = await make_dirs(extracted_output_dir, JSON_OUTPUT_DIR)
-        if _indexer.indexer_type == ELASTIC_SEARCH:
-            elastic_search: Elasticsearch = _indexer
-            index_obj = await get_indexer(elastic_search.indexer_type,
-                                          url=elastic_search.url,
-                                          index_name=elastic_search.index_name,
-                                          ssl_verify=elastic_search.ssl_verify)
-            logger.info(f"{elastic_search.indexer_type.capitalize()} object created")
-            await index_obj.index(extracted_output_dir)
-            logger.info(f"Index completed")
+        if _indexer.indexer_type:
+            extracted_output_dir = _indexer.extracted_dir_path
+            extracted_output_dir = await make_dirs(extracted_output_dir, JSON_OUTPUT_DIR)
+            if _indexer.indexer_type == ELASTIC_SEARCH:
+                elastic_search: Elasticsearch = _indexer
+                index_obj = await get_indexer(elastic_search.indexer_type,
+                                              url=elastic_search.url,
+                                              index_name=elastic_search.index_name,
+                                              ssl_verify=elastic_search.ssl_verify)
+                logger.info(f"{elastic_search.indexer_type.capitalize()} object created")
+                await index_obj.index(extracted_output_dir)
+                logger.info(f"Index completed")
+        else:
+            raise ValueError(f"Give valid credentials or load properly environment variable.")
