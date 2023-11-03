@@ -8,8 +8,6 @@ from df_extract import pptx, pdf, docx, image, csv
 
 from semantic_ai.utils import create_dir
 
-image_extract = ImageExtract(model_download_enabled=True)
-
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -63,9 +61,14 @@ async def add_non_supported_file(file_name, _dir):
     await update_meta(_dir)
 
 
-async def extract_content(path, output_dir, as_json: bool):
+async def extract_content(
+        path,
+        output_dir,
+        as_json: bool
+):
     file_path = str(path)
     meta_path = await create_dir(output_dir, "meta")
+    image_extract = ImageExtract(model_download_enabled=True)
     try:
         file_ext = path.suffix.lower()
         if file_ext in ('.pptx', '.ppt'):
@@ -111,7 +114,11 @@ async def extract_content(path, output_dir, as_json: bool):
         print(f"Error File---> {file_path}", ex)
 
 
-async def extract(file_path: str, output_dir: str = None, as_json: bool = False):
+async def extract(
+        file_path: str,
+        output_dir: str = None,
+        as_json: bool = False
+):
     input_path = AsyncPath(file_path)
     if await input_path.is_file():
         logger.info(f"Extraction processing")
