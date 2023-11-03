@@ -70,3 +70,5 @@ await semantic_ai.extract()
 await semantic_ai.index()
 ```
 Suppose the job is running in longtime, we can watch the number of file processed, number of file failed and that filename stored in text file which are processed and failed in the 'EXTRACTED_DIR_PATH/meta' directory.
+### Example
+To connect the source and get the connection object. We can see that in examples folder.
