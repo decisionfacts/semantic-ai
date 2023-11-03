@@ -18,7 +18,7 @@ def requirements():
 
 setup(
     name='semantic_ai',
-    version='0.0.1',
+    version='v0.0.1',
     description='Sematic AI RAG System',
     long_description=readme(),
     author='DecisionFacts',
