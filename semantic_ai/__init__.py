@@ -1,7 +1,7 @@
 import logging
 from semantic_ai.connectors import get_connectors
 from semantic_ai.indexer import get_indexer
-from semantic_ai.config import settings, Sharepoint, Elasticsearch
+from semantic_ai.config import settings as default_settings, Sharepoint, Elasticsearch, Settings
 from semantic_ai.utils import iter_to_aiter, make_dirs
 from semantic_ai.extract import extract as df_extract
 from semantic_ai.constants import (
@@ -15,7 +15,15 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def download():
+async def _load_settings(settings: Settings | None = None):
+    if not settings:
+        settings = default_settings
+        return settings
+
+
+async def download(settings: Settings | None = None):
+    settings = await _load_settings(settings)
+
     logger.info(f"Initiated download process")
     async for connector in iter_to_aiter(settings.connectors):
         if connector.connector_type:
@@ -36,7 +44,9 @@ async def download():
             raise ValueError(f"Give valid credentials or load properly environment variable.")
 
 
-async def extract():
+async def extract(settings: Settings | None = None):
+    settings = await _load_settings(settings)
+
     downloaded_path = None
     extracted_output_dir = ""
     logger.info(f"Extraction initiated")
@@ -50,7 +60,9 @@ async def extract():
                      as_json=True)
 
 
-async def index():
+async def index(settings: Settings | None = None):
+    settings = await _load_settings(settings)
+
     logger.info(f"Index starting")
     extracted_output_dir = ""
     async for _indexer in iter_to_aiter(settings.indexer):
