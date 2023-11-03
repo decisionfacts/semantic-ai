@@ -91,10 +91,11 @@ class Sharepoint(BaseConnectors):
 
     async def file_download(self, file_name, file_download):
         async with httpx.AsyncClient() as client:
-            response = await client.get(file_download)
-        save_to_path = os.path.join(self.output_dir, file_name)
-        async with aiofiles.open(save_to_path, "wb") as f:
-            await f.write(response.content)
+            async with client.stream('GET', file_download) as resp:
+                save_to_path = os.path.join(self.output_dir, file_name)
+                async with aiofiles.open(save_to_path, "wb") as f:
+                    async for chunk in resp.aiter_bytes():
+                        await f.write(chunk)
 
     async def iterate_items(self, items):
         count = 0
