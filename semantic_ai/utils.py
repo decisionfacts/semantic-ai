@@ -1,6 +1,7 @@
 import asyncio
 import functools
 import importlib
+import os
 
 from concurrent.futures import ThreadPoolExecutor
 from typing import List
@@ -80,3 +81,22 @@ async def check_isfile(path):
         return True
     else:
         return False
+
+
+async def create_dir(path, folder_name):
+    _dir_path = f"{path}/{folder_name}"
+    is_exist = os.path.exists(_dir_path)
+    if not is_exist:
+        os.makedirs(_dir_path)
+    return _dir_path
+
+
+async def make_dirs(_dir_path, folder_name):
+    if not _dir_path:
+        dir_path = os.getcwd().split('/')
+        download_path = "/".join(dir_path)
+        _dir_path = f"{download_path}/{folder_name}"
+    is_exist = os.path.exists(_dir_path)
+    if not is_exist:
+        os.makedirs(_dir_path)
+    return _dir_path

@@ -1,6 +1,7 @@
 import aiofiles
 import httpx
 import os
+import logging
 
 from semantic_ai.connectors.base import BaseConnectors
 from semantic_ai.constants import DEFAULT_FOLDER_NAME
@@ -8,6 +9,9 @@ from semantic_ai.utils import sync_to_async, iter_to_aiter
 
 MICROSOFT_OAUTH_URL = "https://login.microsoftonline.com/{}/oauth2/v2.0/token"
 SITE_URL = "https://graph.microsoft.com/v1.0/sites"
+
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class Sharepoint(BaseConnectors):
@@ -19,8 +23,8 @@ class Sharepoint(BaseConnectors):
                  scope: str,
                  tenant_id: str,
                  host_name: str,
-                 grant_type: str,
-                 output_dir: str = None
+                 grant_type: str | None = None,
+                 output_dir: str | None = None
                  ):
         self.client_id = client_id
         self.client_secret = client_secret
@@ -37,6 +41,7 @@ class Sharepoint(BaseConnectors):
         is_exist = os.path.exists(self.output_dir)
         if not is_exist:
             os.makedirs(self.output_dir)
+        logger.info(f"file download output dir created {self.output_dir}")
 
     async def connect(self, site_name) -> dict:
         site_id_url = f"{SITE_URL}/{self.host_name}:/sites/{site_name}"
@@ -65,6 +70,8 @@ class Sharepoint(BaseConnectors):
                 data=data,
             )
         token_response = await sync_to_async(resp.json)
+        if token_response.get('error'):
+            raise ValueError(token_response.get('error_description'))
         access_token = token_response.get('access_token')
         return access_token
 
@@ -92,17 +99,17 @@ class Sharepoint(BaseConnectors):
     async def iterate_items(self, items):
         count = 0
         async for file in iter_to_aiter(items.get('value', [])):
-            # if count < 1:
-            folder = file.get('folder')
-            if folder is None:
-                file_name = file.get('name')
-                file_download = file.get('@microsoft.graph.downloadUrl')
-                await self.file_download(file_name, file_download)
+            if count < 1:
+                folder = file.get('folder')
+                if folder is None:
+                    file_name = file.get('name')
+                    file_download = file.get('@microsoft.graph.downloadUrl')
+                    await self.file_download(file_name, file_download)
+                else:
+                    pass
+                count += 1
             else:
-                pass
-            # count += 1
-            # else:
-            #     break
+                break
 
     async def download(self,
                        site_id,
@@ -115,6 +122,8 @@ class Sharepoint(BaseConnectors):
             url = folder_url.strip('/')
             folder_url = f"{SITE_URL}/{site_id}/drives/{drive_id}/root:/{url}:/children"
             items = await self.__make_request(folder_url)
+            logger.info(f"Downloading started. Please check in {self.output_dir} dir")
             _download = await self.iterate_items(items)
+            logger.info(f"Files are downloaded in {self.output_dir} dir")
         except Exception as ex:
-            print(f"{ex}")
+            logger.error(f"Sharepoint download error: {ex}")
