@@ -1,4 +1,4 @@
-langchain==0.0.310
+langchain==0.0.325
 sentence-transformers==2.2.2
 df-extract==0.0.2.1
 boto3~=1.21.20
