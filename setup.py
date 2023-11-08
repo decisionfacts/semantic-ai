@@ -28,7 +28,8 @@ def requirements():
         "fastapi==0.104.1",
         "auto-gptq==0.5.0",
         "openai==0.28.1",
-        "uvicorn==0.24.0.post1"
+        "uvicorn==0.24.0.post1",
+        "tiktoken==0.5.1"
     ]
 
 

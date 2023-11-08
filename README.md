@@ -17,7 +17,7 @@ $ python -m pip install semantic-ai
 $ python -m pip install .
 ```
 # Set the environment variable
-Put the all credentials in .env file
+Put the credentials in .env file. Only give the credential for an one connector, an one indexer and an one llm model config. other fields put as empty
 ```shell
 # Default
 FILE_DOWNLOAD_DIR_PATH= # default directory name 'download_file_dir'
@@ -40,7 +40,12 @@ ELASTICSEARCH__URL="elasticsearch_url" # give valid url
 ELASTICSEARCH__USER="elasticsearch_user" # give valid user
 ELASTICSEARCH__PASSWORD="elasticsearch_password" # give valid password
 ELASTICSEARCH__INDEX_NAME="index_name"
-ELASTICSEARCH__SSL_VERIFY="ssl_verify" # True or False 
+ELASTICSEARCH__SSL_VERIFY="ssl_verify" # True or False
+
+# Qdrant
+QDRANT__URL="<qdrant_url>"
+QDRANT__INDEX_NAME="<index_name>"
+QDRANT__API_KEY="<apikey>"
 
 # LLM
 LLM__MODEL="<llm_model>" # llama, openai
@@ -103,3 +108,19 @@ connection = Sharepoint(client_id=CLIENT_ID,
                         host_name=HOST_NAME,
                         scope=SCOPE)
 ```
+## Run in the server
+```shell
+$ semanticai_serve -f .env
+
+INFO:     Loading environment from '.env'
+INFO:     Started server process [43973]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+```
+Open your browser at http://127.0.0.1:8000/semantic-ai
+
+### Interactive API docs
+Now go to http://127.0.0.1:8000/docs.
+You will see the automatic interactive API documentation (provided by Swagger UI):
+![docs/source/_static/images/img.png](docs/source/_static/images/img.png)

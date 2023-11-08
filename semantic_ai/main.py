@@ -13,6 +13,11 @@ app = FastAPI(title="Semantic AI",
               docs_url=f"/semantic-ai/docs")
 
 
+@app.get("/semantic-ai")
+async def info():
+    return {'name': app.title}
+
+
 @app.post("/semantic-ai/search")
 async def semantic_search(query: str):
     try:
