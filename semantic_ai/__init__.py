@@ -36,8 +36,8 @@ async def __index_obj_create(settings: Settings | None = None):
             index_obj = await get_indexer(
                 settings.indexer_type,
                 url=elastic_search.url,
-                es_user=elastic_search.es_user,
-                es_password=elastic_search.es_password,
+                es_user=elastic_search.user,
+                es_password=elastic_search.password,
                 index_name=elastic_search.index_name,
                 ssl_verify=elastic_search.ssl_verify
             )
@@ -46,8 +46,8 @@ async def __index_obj_create(settings: Settings | None = None):
             index_obj = await get_indexer(
                 settings.indexer_type,
                 url=elastic_search.url,
-                es_user=elastic_search.es_user,
-                es_password=elastic_search.es_password,
+                es_user=elastic_search.user,
+                es_password=elastic_search.password,
                 index_name=elastic_search.index_name,
                 ssl_verify=elastic_search.ssl_verify,
                 embedding=_embed
