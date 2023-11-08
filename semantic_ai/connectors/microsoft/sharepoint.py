@@ -124,4 +124,5 @@ class Sharepoint(BaseConnectors):
             _download = await self.iterate_items(items)
             logger.info(f"Files are downloaded in {self.output_dir} dir")
         except Exception as ex:
+            logger.info(f"Download failed")
             logger.error(f"Sharepoint download error: {ex}")

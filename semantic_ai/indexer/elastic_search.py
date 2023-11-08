@@ -5,7 +5,7 @@ from typing import (
 )
 
 from langchain.embeddings.base import Embeddings
-from langchain.vectorstores import ElasticVectorSearch
+from langchain.vectorstores import ElasticsearchStore
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 
 from semantic_ai.indexer.base import BaseIndexer
@@ -18,22 +18,27 @@ class ElasticsearchIndexer(BaseIndexer):
             self,
             *,
             url: str,
+            es_user: str | None = None,
+            es_password: str | None = None,
             index_name: str,
             embedding: Optional[Embeddings] = HuggingFaceEmbeddings(),
             ssl_verify: bool = True
     ):
         super().__init__()
         self.url = url
+        self.es_user = es_user
+        self.es_password = es_password
         self.index_name = index_name
         self.embeddings = embedding
         self.ssl_verify = {"verify_certs": ssl_verify}
 
-    async def create(self) -> ElasticVectorSearch:
-        obj = ElasticVectorSearch(
+    async def create(self) -> ElasticsearchStore:
+        obj = ElasticsearchStore(
             embedding=self.embeddings,
-            elasticsearch_url=self.url,
+            es_url=self.url,
+            es_user=self.es_user,
+            es_password=self.es_password,
             index_name=f"{self.index_name}",
-            ssl_verify=self.ssl_verify
         )
         return obj
 
@@ -65,11 +70,12 @@ class ElasticsearchIndexer(BaseIndexer):
             documents = await self.from_documents(extracted_json_dir)
             if await check_isfile(extracted_json_dir):
                 try:
-                    await ElasticVectorSearch.afrom_documents(
+                    await ElasticsearchStore.afrom_documents(
                         documents=documents,
                         embedding=self.embeddings,
-                        elasticsearch_url=self.url,
-                        ssl_verify=self.ssl_verify,
+                        es_url=self.url,
+                        es_user=self.es_user,
+                        es_password=self.es_password,
                         index_name=self.index_name
                     )
                 except Exception as ex:
@@ -77,11 +83,12 @@ class ElasticsearchIndexer(BaseIndexer):
             else:
                 try:
                     async for docs in iter_to_aiter(documents):
-                        await ElasticVectorSearch.afrom_documents(
+                        await ElasticsearchStore.afrom_documents(
                             documents=docs,
                             embedding=self.embeddings,
-                            elasticsearch_url=self.url,
-                            ssl_verify=self.ssl_verify,
+                            es_url=self.url,
+                            es_user=self.es_user,
+                            es_password=self.es_password,
                             index_name=self.index_name
                         )
                 except Exception as ex:
