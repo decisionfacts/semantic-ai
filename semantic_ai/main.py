@@ -34,6 +34,7 @@ async def semantic_search(query: str):
 
 def main():
     parser = argparse.ArgumentParser(description='Creating semantic ai')
+    parser.add_argument('serve', help='Serve the inference', type=str)
     parser.add_argument('--file', '-f', help='Env file', required=True, type=str)
     parser.add_argument('--host', help='Host', default='127.0.0.1', type=str)
     parser.add_argument('--port', '-p', help='Port', default=8000, type=int)
