@@ -24,7 +24,12 @@ def requirements():
         "jq==1.6.0",
         "httpx==0.25.0",
         "pydantic==2.4.2",
-        "pydantic-settings==2.0.3"
+        "pydantic-settings==2.0.3",
+        "fastapi==0.104.1",
+        "auto-gptq==0.5.0",
+        "openai==0.28.1",
+        "uvicorn==0.24.0.post1",
+        "tiktoken==0.5.1"
     ]
 
 
@@ -46,5 +51,10 @@ setup(
               ' retrieval-augmented-generation llama2 '],
     packages=find_packages(),
     include_package_data=True,
-    install_requires=requirements()
+    install_requires=requirements(),
+    entry_points={
+            "console_scripts": [
+                "semanticai_serve=semantic_ai.main:main",
+            ],
+        },
 )

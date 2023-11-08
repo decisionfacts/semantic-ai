@@ -2,6 +2,8 @@ import asyncio
 import functools
 import importlib
 import os
+import gc
+import torch
 
 from concurrent.futures import ThreadPoolExecutor
 from typing import List
@@ -100,3 +102,18 @@ async def make_dirs(_dir_path, folder_name):
     if not is_exist:
         os.makedirs(_dir_path)
     return _dir_path
+
+
+async def generate_llama_simple_prompt_template(prompt) -> str:
+    b_inst, e_inst = "[INST]", "[/INST]"
+    b_sys, e_sys = "<<SYS>>\n", "\n<</SYS>>\n\n"
+    default_system_prompt = prompt
+    system_prompt = b_inst + b_sys + default_system_prompt + e_sys + e_inst
+    return system_prompt
+
+
+async def _clear_cache(obj=None):
+    if obj:
+        del obj
+    torch.cuda.empty_cache()
+    gc.collect()
