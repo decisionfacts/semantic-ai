@@ -77,14 +77,14 @@ import semantic_ai
 
 ### 2. To download the files from given source, extract the content from the downloaded files and index the extracted data in the given vector db.
 ```python
-await semantic_ai.download(settings)
-await semantic_ai.extract(settings)
-await semantic_ai.index(settings)
+await semantic_ai.download()
+await semantic_ai.extract()
+await semantic_ai.index()
 ```
 After completion of download, extract and index, we can generate the answer from indexed vector db. That code given below.
 ### 3. To generate the answer from indexed vector db using retrival LLM model.
 ```python
-search_obj = await semantic_ai.search(settings)
+search_obj = await semantic_ai.search()
 query = ""
 search = await search_obj.generate(query)
 ```
