@@ -54,7 +54,7 @@ setup(
     install_requires=requirements(),
     entry_points={
             "console_scripts": [
-                "semanticai_serve=semantic_ai.main:main",
+                "semantic_ai=semantic_ai.main:main",
             ],
         },
 )

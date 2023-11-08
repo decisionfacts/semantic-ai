@@ -110,7 +110,7 @@ connection = Sharepoint(client_id=CLIENT_ID,
 ```
 ## Run in the server
 ```shell
-$ semanticai_serve -f .env
+$ semantic_ai serve -f .env
 
 INFO:     Loading environment from '.env'
 INFO:     Started server process [43973]
