@@ -3,7 +3,7 @@
 
 [![Python version](https://img.shields.io/badge/python-3.10-green)](https://img.shields.io/badge/python-3.10-green)[![PyPI version](https://badge.fury.io/py/semantic-ai.svg)](https://badge.fury.io/py/semantic-ai)[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-An open source framework for Retrieval-Augmented  System (RAG) uses semantic search helps to retrieve the expected results and generate human readable conversational response with the help of LLM (Large Language Model).
+An open-source framework for Retrieval-Augmented System (RAG) uses semantic search to retrieve the expected results and generate human-readable conversational responses with the help of LLM (Large Language Model).
 
 ## Requirements
 
@@ -18,13 +18,13 @@ $ python -m pip install semantic-ai
 $ python -m pip install .
 ```
 # Set the environment variable
-Put the credentials in .env file. Only give the credential for an one connector, an one indexer and an one llm model config. other fields put as empty
+Set the credentials in .env file. Only give the credential for an one connector, an one indexer and an one llm model config. other fields put as empty
 ```shell
 # Default
 FILE_DOWNLOAD_DIR_PATH= # default directory name 'download_file_dir'
 EXTRACTED_DIR_PATH= # default directory name 'extracted_dir'
 
-# Connector
+# Connector (SharePoint, S3, GCP Bucket, GDrive, Confluence etc.,)
 CONNECTOR_TYPE="connector_name" # sharepoint
 SHAREPOINT__CLIENT_ID="client_id"
 SHAREPOINT__CLIENT_SECRET="client_secret"
@@ -76,22 +76,23 @@ import asyncio
 import semantic_ai
 ```
 
-### 2. To download the files from given source, extract the content from the downloaded files and index the extracted data in the given vector db.
+### 2. To download the files from a given source, extract the content from the downloaded files and index the extracted data in the given vector db.
 ```python
 await semantic_ai.download()
 await semantic_ai.extract()
 await semantic_ai.index()
 ```
 After completion of download, extract and index, we can generate the answer from indexed vector db. That code given below.
-### 3. To generate the answer from indexed vector db using retrival LLM model.
+### 3. To generate the answer from indexed vector db using retrieval LLM model.
 ```python
 search_obj = await semantic_ai.search()
 query = ""
 search = await search_obj.generate(query)
 ```
-Suppose the job is running in longtime, we can watch the number of file processed, number of file failed and that filename stored in text file which are processed and failed in the 'EXTRACTED_DIR_PATH/meta' directory.
+Suppose the job is running for a long time, we can watch the number of files processed, the number of files failed, and that filename stored in the text file that is processed and failed in the 'EXTRACTED_DIR_PATH/meta' directory.
+
 ### Example
-To connect the source and get the connection object. We can see that in examples folder.
+To connect the source and get the connection object. We can see that in the examples folder.
 Example: Sharepoint connector
 ```python
 from semantic_ai.connectors import Sharepoint
