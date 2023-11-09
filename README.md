@@ -1,6 +1,7 @@
+![docs/source/_static/images/createLLM.png](docs/source/_static/images/createLLM.png)
 # Semantic AI Lib
 
-[![PyPI version](https://badge.fury.io/py/semantic-ai.svg)](https://badge.fury.io/py/semantic-ai)
+[![Python version](https://img.shields.io/badge/python-3.10-green)](https://img.shields.io/badge/python-3.10-green)[![PyPI version](https://badge.fury.io/py/semantic-ai.svg)](https://badge.fury.io/py/semantic-ai)[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 An open source framework for Retrieval-Augmented  System (RAG) uses semantic search helps to retrieve the expected results and generate human readable conversational response with the help of LLM (Large Language Model).
 

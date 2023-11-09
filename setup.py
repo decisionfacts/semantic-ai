@@ -43,7 +43,7 @@ setup(
     author_email='info@decisionfacts.io',
     maintainer='DecisionFacts',
     maintainer_email='info@decisionfacts.io',
-    license='MIT',
+    license='Apache License 2.0',
     url='https://github.com/decisionfacts/semantic-ai',
     download_url='https://github.com/decisionfacts/semantic-ai.git',
     keywords=['pdf machine-learning ocr deep-neural-networks openai docx approximate-nearest-neighbor-search '
