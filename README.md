@@ -93,7 +93,7 @@ Suppose the job is running for a long time, we can watch the number of files pro
 
 ### Example
 To connect the source and get the connection object. We can see that in the examples folder.
-Example: Sharepoint connector
+Example: SharePoint connector
 ```python
 from semantic_ai.connectors import Sharepoint
 
