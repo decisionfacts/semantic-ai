@@ -1,4 +1,4 @@
-![docs/source/_static/images/createLLM.png](docs/source/_static/images/createLLM.png)
+![Semantic AI Logo](https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/createLLM.png?raw=True)
 # Semantic AI Lib
 
 [![Python version](https://img.shields.io/badge/python-3.10-green)](https://img.shields.io/badge/python-3.10-green)[![PyPI version](https://badge.fury.io/py/semantic-ai.svg)](https://badge.fury.io/py/semantic-ai)[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -125,4 +125,4 @@ Open your browser at http://127.0.0.1:8000/semantic-ai
 ### Interactive API docs
 Now go to http://127.0.0.1:8000/docs.
 You will see the automatic interactive API documentation (provided by Swagger UI):
-![docs/source/_static/images/img.png](docs/source/_static/images/img.png)
+![Swagger UI](https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/img.png?raw=True)
