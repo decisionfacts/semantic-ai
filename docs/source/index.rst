@@ -16,4 +16,12 @@ Library Documentation
 
    introduction
    installing
+   connectors
+   connectors/index
    df_extract
+   embeddings
+   embeddings/index
+   vector_database
+   vector_database/index
+   vector_indexer
+   semantic_search

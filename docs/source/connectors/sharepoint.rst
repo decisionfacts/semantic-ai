@@ -1,10 +1,10 @@
 Microsoft SharePoint
-==========
+====================
 
 This documents covers how to download the documents from Sharepoint.
 
 Pre-requisites
--------------
+--------------
 
 Register an application with the `Microsoft identity platform <https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app>`_ and create the client_id, client_secret and tenant_id.
 

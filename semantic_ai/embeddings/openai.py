@@ -34,10 +34,6 @@ class OpenAIEmbeddings(BaseEmbeddings):
     """Maximum number of texts to embed in each batch"""
     max_retries: int = 6
     """Maximum number of retries to make when generating."""
-    request_timeout: Optional[Union[float, Tuple[float, float]]] = None
-    """Timeout in seconds for the OpenAPI request."""
-    model_kwargs: Dict[str, Any] = Field(default_factory=dict)
-    """Holds any model parameters valid for `create` call not explicitly specified."""
 
     def __init__(
             self, **kwargs
@@ -52,7 +48,5 @@ class OpenAIEmbeddings(BaseEmbeddings):
             openai_api_key=self.openai_api_key,
             chunk_size=self.chunk_size,
             max_retries=self.max_retries,
-            request_timeout=self.request_timeout,
-            model_kwargs=self.model_kwargs
         )
         return embeddings
