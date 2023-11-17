@@ -28,6 +28,14 @@ Before you use the sample code in this notebook, you must perform the following 
 
     ['google/flan-t5-xxl', 'google/flan-ul2', 'bigscience/mt0-xxl', 'eleutherai/gpt-neox-20b', 'ibm/mpt-7b-instruct2', 'bigcode/starcoder', 'meta-llama/llama-2-70b-chat', 'ibm/granite-13b-instruct-v1', 'ibm/granite-13b-chat-v1']
 
+**Defining the model parameters:**
+
+.. code-block:: python
+
+    parameters = {
+        GenParams.DECODING_METHOD: "greedy",
+        GenParams.MAX_NEW_TOKENS: 500
+    }
 
 **Import Semantic AI:**
 
@@ -41,6 +49,7 @@ Before you use the sample code in this notebook, you must perform the following 
             api_key=API_KEY,
             project_id=PROJECT_ID,
             model_type=model_type,
+            parameters=parameters
     ).llm_model()
 
 Once IBM Watsonx llm instance initiated, next we initiate the indexed vector database. We choose the indexed vector db and index name.
