@@ -30,7 +30,7 @@ class Ibm(BaseLLM):
         self.url = url
         self.api_key = api_key
         self.project_id = project_id
-        self.model_type = model_type or ModelTypes.LLAMA_2_70B_CHAT
+        self.model_type = model_type or ModelTypes.LLAMA_2_70B_CHAT.value
 
         if not self.url:
             raise ValueError(f"Url has empty. Please provide valid url")
@@ -43,6 +43,7 @@ class Ibm(BaseLLM):
             "apikey": self.api_key
         }
         model_type_list = _model_type()
+        print(self.model_type)
         if self.model_type not in model_type_list:
             raise ValueError(
                 f"{self.model_type} not in the model type list. Please give the following model type: {model_type_list}"
