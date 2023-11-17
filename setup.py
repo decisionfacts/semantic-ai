@@ -29,7 +29,8 @@ def requirements():
         "auto-gptq==0.5.0",
         "openai==0.28.1",
         "uvicorn==0.24.0.post1",
-        "tiktoken==0.5.1"
+        "tiktoken==0.5.1",
+        "ibm-watson-machine-learning==1.0.327"
     ]
 
 

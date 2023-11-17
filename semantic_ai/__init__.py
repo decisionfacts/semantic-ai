@@ -2,7 +2,7 @@ import logging
 from semantic_ai.connectors import get_connectors
 from semantic_ai.indexer import get_indexer
 from semantic_ai.llm import get_llm
-from semantic_ai.config import Sharepoint, Elasticsearch, Settings, LLM, Qdrant
+from semantic_ai.config import Sharepoint, Elasticsearch, Settings, LLM, Qdrant, IBM
 from semantic_ai.utils import iter_to_aiter, make_dirs, generate_llama_simple_prompt_template
 from semantic_ai.extract import extract as df_extract
 from semantic_ai import constants
@@ -148,6 +148,15 @@ async def search(settings: Settings | None = None) -> Search:
         llm_: LLM = _llm
         llm_obj = await get_llm(_llm.model,
                                 model_name_or_path=llm_.model_name_or_path
+                                )
+        prompt_template = constants.DEFAULT_PROMPT
+    elif _llm.model == constants.IBM:
+        llm_: IBM = settings.ibm
+        llm_obj = await get_llm(_llm.model,
+                                model_type=_llm.model_name_or_path,
+                                url=llm_.url,
+                                api_key=llm_.api_key,
+                                project_id=llm_.project_id
                                 )
         prompt_template = constants.DEFAULT_PROMPT
     if not llm_obj:

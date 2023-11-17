@@ -12,6 +12,7 @@ JSON_OUTPUT_DIR = "extracted_dir"
 # LLM
 Llama = 'llama'
 OPENAI = "openai"
+IBM = 'ibm'
 
 CONNECTORS_LIST = [
     "sharepoint"
@@ -23,6 +24,7 @@ INDEXER_LIST = [
 ]
 
 LLM_LIST = [
+    "ibm",
     "llama",
     "openai"
 ]

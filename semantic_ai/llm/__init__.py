@@ -2,9 +2,11 @@ from semantic_ai.constants import LLM_LIST
 from semantic_ai.utils import get_dynamic_class
 from semantic_ai.llm.llama import Llama
 from semantic_ai.llm.openai import Openai
+from semantic_ai.llm.ibm import Ibm
 
 
 __all__ = [
+    "Ibm",
     "Llama",
     "Openai",
     "get_llm"

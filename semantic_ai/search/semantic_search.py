@@ -52,7 +52,7 @@ class Search:
             return_source_documents=True
         )
         try:
-            result = await qa.acall(query)
+            result = await sync_to_async(qa, query)
             if result:
                 # print("Retrieval Result =:\n", result)
                 logger.info(f"Retrieval Result =:\n{result}")
