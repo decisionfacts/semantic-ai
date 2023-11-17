@@ -27,16 +27,11 @@ class HFEmbeddings(BaseEmbeddings):
                 )
         """
 
-    client: Any  #: :meta private:
     model_name: str = DEFAULT_MODEL_NAME
     """Model name to use."""
     cache_folder: Optional[str] = None
     """Path to store models. 
     Can be also set by SENTENCE_TRANSFORMERS_HOME environment variable."""
-    model_kwargs: Dict[str, Any] = Field(default_factory=dict)
-    """Keyword arguments to pass to the model."""
-    encode_kwargs: Dict[str, Any] = Field(default_factory=dict)
-    """Keyword arguments to pass when calling the `encode` method of the model."""
     multi_process: bool = False
     """Run encode() on multiple GPUs."""
 
@@ -45,11 +40,8 @@ class HFEmbeddings(BaseEmbeddings):
 
     async def embed(self, **kwargs):
         embeddings = HuggingFaceEmbeddings(
-            client=self.client,
             model_name=self.model_name,
             cache_folder=self.cache_folder,
-            model_kwargs=self.model_kwargs,
-            encode_kwargs=self.encode_kwargs,
             multi_process=self.multi_process,
             **kwargs
         )
