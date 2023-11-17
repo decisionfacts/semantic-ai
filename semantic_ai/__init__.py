@@ -158,4 +158,4 @@ async def search(settings: Settings | None = None) -> Search:
     return Search(model=llm_model,
                   load_vector_db=vector_db,
                   top_k=5,
-                  prompt_template=prompt_template)
+                  prompt=prompt_template)
