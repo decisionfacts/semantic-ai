@@ -21,12 +21,12 @@ class Search:
                  model,
                  load_vector_db,
                  top_k: Optional[int] = None,
-                 prompt_template: Optional[str] = None
+                 prompt: Optional[str] = None
                  ):
         self.model = model
         self.load_vector_db = load_vector_db
         self.top_k = top_k or 4
-        self.prompt_template = prompt_template or DEFAULT_PROMPT
+        self.prompt_template = prompt or DEFAULT_PROMPT
 
     async def generate(self, query: str):
         asyncio.create_task(_clear_cache())

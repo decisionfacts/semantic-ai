@@ -22,7 +22,8 @@ class ElasticsearchIndexer(BaseIndexer):
             es_password: str | None = None,
             index_name: str,
             embedding: Optional[Embeddings] = HuggingFaceEmbeddings(),
-            ssl_verify: bool = True
+            ssl_verify: bool = True,
+            es_api_key: Optional[str] = None
     ):
         super().__init__()
         self.url = url
@@ -31,6 +32,7 @@ class ElasticsearchIndexer(BaseIndexer):
         self.index_name = index_name
         self.embeddings = embedding
         self.ssl_verify = {"verify_certs": ssl_verify}
+        self.es_api_key = es_api_key
 
     async def create(self) -> ElasticsearchStore:
         obj = ElasticsearchStore(
@@ -39,6 +41,7 @@ class ElasticsearchIndexer(BaseIndexer):
             es_user=self.es_user,
             es_password=self.es_password,
             index_name=f"{self.index_name}",
+            es_api_key=self.es_api_key
         )
         return obj
 
@@ -65,10 +68,10 @@ class ElasticsearchIndexer(BaseIndexer):
         else:
             raise ValueError(f"Please give valid file or directory path.")
 
-    async def index(self, extracted_json_dir: str):
-        if extracted_json_dir:
-            documents = await self.from_documents(extracted_json_dir)
-            if await check_isfile(extracted_json_dir):
+    async def index(self, extracted_json_dir_or_file: str):
+        if extracted_json_dir_or_file:
+            documents = await self.from_documents(extracted_json_dir_or_file)
+            if await check_isfile(extracted_json_dir_or_file):
                 try:
                     await ElasticsearchStore.afrom_documents(
                         documents=documents,
