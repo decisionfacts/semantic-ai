@@ -18,6 +18,12 @@ def _model_type():
     return model_list
 
 
+DEFAULT_PARAMETERS = {
+    GenParams.DECODING_METHOD: "greedy",
+    GenParams.MAX_NEW_TOKENS: 500
+}
+
+
 class Ibm(BaseLLM):
 
     def __init__(self,
@@ -25,12 +31,14 @@ class Ibm(BaseLLM):
                  url: str,
                  api_key: str,
                  project_id: str,
-                 model_type: str | None = None
+                 model_type: str | None = None,
+                 parameters: dict | None = None
                  ):
         self.url = url
         self.api_key = api_key
         self.project_id = project_id
         self.model_type = model_type or ModelTypes.LLAMA_2_70B_CHAT.value
+        self.parameters = parameters or DEFAULT_PARAMETERS
 
         if not self.url:
             raise ValueError(f"Url has empty. Please provide valid url")
@@ -50,16 +58,12 @@ class Ibm(BaseLLM):
             )
 
     async def llm_model(self):
-        ibm_llm_parameters = {
-            GenParams.DECODING_METHOD: "greedy",
-            GenParams.MAX_NEW_TOKENS: 500
-        }
         ibm_llm_project_id = self.project_id
         ibm_llm_model = Model(
             model_id=self.model_type,
             credentials=self.ibm_llm_credentials,
             project_id=ibm_llm_project_id,
-            params=ibm_llm_parameters
+            params=self.parameters
         )
         logger.info("ibm_llm_model_loaded->%s" % ibm_llm_model.get_details()['short_description'])
         ibm_llm = ibm_llm_model.to_langchain()
