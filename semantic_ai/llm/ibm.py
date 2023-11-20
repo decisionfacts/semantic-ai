@@ -58,11 +58,10 @@ class Ibm(BaseLLM):
             )
 
     async def llm_model(self):
-        ibm_llm_project_id = self.project_id
         ibm_llm_model = Model(
             model_id=self.model_type,
             credentials=self.ibm_llm_credentials,
-            project_id=ibm_llm_project_id,
+            project_id=self.project_id,
             params=self.parameters
         )
         logger.info("ibm_llm_model_loaded->%s" % ibm_llm_model.get_details()['short_description'])
