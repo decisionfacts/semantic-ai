@@ -27,6 +27,7 @@ class Openai(BaseLLM):
                 logger.info(f"Chat Open AI model initiating")
                 self.llm = ChatOpenAI(model_name=self.model_name,
                                       openai_api_key=self.openai_api_key,
+                                      max_tokens=500,
                                       **kwargs
                                       )
             else:
