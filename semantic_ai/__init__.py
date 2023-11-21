@@ -39,7 +39,7 @@ async def __index_obj_create(settings: Settings | None = None):
                 es_user=elastic_search.user,
                 es_password=elastic_search.password,
                 index_name=elastic_search.index_name,
-                ssl_verify=elastic_search.ssl_verify
+                verify_certs=elastic_search.ssl_verify
             )
         else:
             _embed = await __embed_obj(settings.embedding_type, settings.embed.model_name)
@@ -49,7 +49,7 @@ async def __index_obj_create(settings: Settings | None = None):
                 es_user=elastic_search.user,
                 es_password=elastic_search.password,
                 index_name=elastic_search.index_name,
-                ssl_verify=elastic_search.ssl_verify,
+                verify_certs=elastic_search.ssl_verify,
                 embedding=_embed
             )
     elif settings.indexer_type == constants.QDRANT:
@@ -122,7 +122,7 @@ async def index(settings: Settings | None = None):
         extracted_output_dir = settings.extracted_dir_path
         extracted_output_dir = await make_dirs(extracted_output_dir, constants.JSON_OUTPUT_DIR)
         try:
-            index_obj = await __index_obj_create()
+            index_obj = await __index_obj_create(settings)
             await index_obj.index(extracted_output_dir)
             logger.info(f"{settings.indexer_type.capitalize()} object created")
         except Exception as ex:
@@ -167,4 +167,4 @@ async def search(settings: Settings | None = None) -> Search:
     return Search(model=llm_model,
                   load_vector_db=vector_db,
                   top_k=5,
-                  prompt_template=prompt_template)
+                  prompt=prompt_template)
