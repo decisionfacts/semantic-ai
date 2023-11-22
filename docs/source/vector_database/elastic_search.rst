@@ -1,3 +1,5 @@
+.. _elastic-search:
+
 Elastic Search
 ==============
 
