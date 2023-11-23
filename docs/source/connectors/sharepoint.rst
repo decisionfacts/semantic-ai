@@ -8,6 +8,23 @@ Pre-requisites
 
 Register an application with the `Microsoft identity platform <https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app>`_ and create the client_id, client_secret and tenant_id.
 
+**Setup:**
+Access Microsoft share-point in azure portal:
+
+- Go to Azure Portal `Microsoft Azure <https://portal.azure.com/#home>`_ and Login with username and password
+
+- Go to azure service -> App registrations → New registration Enter the name and fill the details , click registration
+
+- Then Go go certificates and secrets generate secret ids.
+
+- Next provide app permissions (Site Permissions)
+
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/azure_api_permissions.png?raw=true
+
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/azure_openai_creds.png?raw=true
+
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/azure.png?raw=true
+
 To create a sharepoint connection with credentials
 --------------------------------------------------
 
