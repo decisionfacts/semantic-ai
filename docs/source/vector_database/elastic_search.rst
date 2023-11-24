@@ -3,6 +3,13 @@
 Elastic Search
 ==============
 
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/DFPS-172-Semantic-ai-LLM-IBM/docs/source/_static/images/logo/elastic-logo-920x920-sue-v02.png?raw=true
+    :alt: Logo
+   :align: left
+   :width: 110px
+   :target: https://www.elastic.co/elasticsearch
+
+
 Elasticsearch is the distributed search and analytics engine. Elasticsearch provides real-time search and analytics for all types of data. Whether structured or unstructured text, numerical data.
 
 **Setup Elasticsearch:**

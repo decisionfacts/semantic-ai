@@ -1,7 +1,15 @@
 OpenAI
 ======
 
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/DFPS-172-Semantic-ai-LLM-IBM/docs/source/_static/images/logo/openai-icon-2021x2048-4rpe5x7n.png?raw=true
+    :alt: Logo
+   :align: left
+   :width: 120px
+   :target: https://openai.com/
+
 OpenAI offers a spectrum of models with different levels of power suitable for different tasks.
+
+
 
 **Setup OpenAI api key:**
 

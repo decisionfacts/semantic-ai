@@ -1,6 +1,14 @@
 LLAMA 2
 =======
 
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/DFPS-172-Semantic-ai-LLM-IBM/docs/source/_static/images/logo/Untitled_design_(1).png?raw=true
+    :alt: Logo
+   :align: left
+   :width: 180px
+   :height: 80px
+   :target: https://ai.meta.com/llama/
+
+
 Llama 2 is a open-access large language models released by Meta. The Llama 2 ranging in scale from 7B to 70B parameters (7B, 13B, 70B). We can check the model details in `Llama 2 <https://ai.meta.com/llama/>`_
 
 **Download the model:**

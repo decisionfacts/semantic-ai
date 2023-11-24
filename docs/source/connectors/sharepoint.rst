@@ -1,14 +1,21 @@
 Microsoft SharePoint
 ====================
 
+.. figure:: https://github.com/decisionfacts/semantic-ai/blob/DFPS-172-Semantic-ai-LLM-IBM/docs/source/_static/images/logo/Microsoft_Office_SharePoint_(2019–present).svg.png?raw=true
+    :alt: Logo
+   :align: left
+   :width: 100px
+   :target: https://www.office.com/
+
+
 This documents covers how to download the documents from Sharepoint.
 
-Pre-requisites
---------------
+**Pre-requisites:**
 
 Register an application with the `Microsoft identity platform <https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app>`_ and create the client_id, client_secret and tenant_id.
 
 **Setup:**
+
 Access Microsoft share-point in azure portal:
 
 - Go to Azure Portal `Microsoft Azure <https://portal.azure.com/#home>`_ and Login with username and password
@@ -19,11 +26,11 @@ Access Microsoft share-point in azure portal:
 
 - Next provide app permissions (Site Permissions)
 
-.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/azure_api_permissions.png?raw=true
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/DFPS-172-Semantic-ai-LLM-IBM/docs/source/_static/images/azure_api_permissions.png?raw=true
 
-.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/azure_openai_creds.png?raw=true
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/DFPS-172-Semantic-ai-LLM-IBM/docs/source/_static/images/azure_openai_creds.png?raw=true
 
-.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/azure.png?raw=true
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/DFPS-172-Semantic-ai-LLM-IBM/docs/source/_static/images/azure.png?raw=true
 
 To create a sharepoint connection with credentials
 --------------------------------------------------

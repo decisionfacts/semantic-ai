@@ -1,6 +1,15 @@
 IBM Watsonx LLM
 ===============
 
+
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/DFPS-172-Semantic-ai-LLM-IBM/docs/source/_static/images/logo/Schermafbeelding-2023-08-30-161943-768x513.png?raw=true
+    :alt: Logo
+   :align: center
+   :width: 100px
+   :height: 80px
+   :target: https://www.ibm.com/watsonx
+
+
 The goal of this notebook is to demonstrate how to chain meta-llama/llama-2-70b-chat models to generate an answer to that question from the indexed vector database.
 
 **IBM Watsonx Setup:**
