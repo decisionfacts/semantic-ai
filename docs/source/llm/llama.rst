@@ -1,7 +1,7 @@
 LLAMA 2
 =======
 
-.. image:: https://github.com/decisionfacts/semantic-ai/blob/DFPS-172-Semantic-ai-LLM-IBM/docs/source/_static/images/logo/Untitled_design_(1).png?raw=true
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/logo/Untitled_design_(1).png?raw=true
     :alt: Logo
    :align: left
    :width: 180px

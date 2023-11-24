@@ -2,7 +2,7 @@ IBM Watsonx LLM
 ===============
 
 
-.. image:: https://github.com/decisionfacts/semantic-ai/blob/DFPS-172-Semantic-ai-LLM-IBM/docs/source/_static/images/logo/Schermafbeelding-2023-08-30-161943-768x513.png?raw=true
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/logo/Schermafbeelding-2023-08-30-161943-768x513.png?raw=true
     :alt: Logo
    :align: center
    :width: 100px
@@ -16,7 +16,30 @@ The goal of this notebook is to demonstrate how to chain meta-llama/llama-2-70b-
 
 Before you use the sample code in this notebook, you must perform the following setup tasks:
 
-- Create a `Watson Machine Learning (WML) Service <https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/>`_ instance (a free plan is offered and information about how to create the instance can be found `here <https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html?context=analytics>`_).
+- First we need to create a project in IBM Watsonx. Follow `here <https://www.ibm.com/docs/en/watsonx-as-a-service?topic=projects-creating-project>`_ to create a project.
+- Once create a project in IBM Watsonx we need to enable the instance service.
+- Go to the project page `here <https://eu-de.dataplatform.cloud.ibm.com/projects/?context=wx>`_ in IBM.
+- Select the project. And got to the *Manage* tab.
+
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/ibm/ibm_project_page.png?raw=true
+
+- Click the *Associate service* -> *New service*. You see the *Services* page.
+
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/ibm/ibm_project_manage.png?raw=true
+
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/ibm/ibm_new_service.png?raw=true
+
+- Click the *Watson Machine Learning*. Please select which instance do you want and config the instance.
+
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/ibm/ibm_ml_page.png?raw=true
+
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/ibm/ibm_instance_page.png?raw=true
+
+- Once create the service please make sure that is initiate or not.
+
+
+
+
 
 **Defining the Credentials:**
 

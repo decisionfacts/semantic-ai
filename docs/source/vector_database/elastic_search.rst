@@ -3,7 +3,7 @@
 Elastic Search
 ==============
 
-.. image:: https://github.com/decisionfacts/semantic-ai/blob/DFPS-172-Semantic-ai-LLM-IBM/docs/source/_static/images/logo/elastic-logo-920x920-sue-v02.png?raw=true
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/logo/elastic-logo-920x920-sue-v02.png?raw=true
     :alt: Logo
    :align: left
    :width: 110px
