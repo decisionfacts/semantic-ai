@@ -5,6 +5,8 @@
 
 An open-source framework for Retrieval-Augmented System (RAG) uses semantic search to retrieve the expected results and generate human-readable conversational responses with the help of LLM (Large Language Model).
 
+**Semantic AI Library Documentation [Docs here](https://docs-semantic-ai.decisionfacts.ai/)**
+
 ## Requirements
 
 Python 3.10+ asyncio

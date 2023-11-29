@@ -24,4 +24,6 @@ Library Documentation
    vector_database
    vector_database/index
    vector_indexer
+   llm
+   llm/index
    semantic_search

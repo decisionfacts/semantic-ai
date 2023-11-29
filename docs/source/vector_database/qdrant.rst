@@ -1,6 +1,13 @@
 Qdrant
 ======
 
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/logo/logo_with_text.png?raw=true
+    :alt: Logo
+   :align: center
+   :width: 110px
+   :target: https://qdrant.tech/
+
+
 Qdrant is a vector similarity search engine that provides a production-ready service with a convenient API to store, search, and manage points (i.e. vectors) with an additional payload.
 
 **Setup Qdrant:**

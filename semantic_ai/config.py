@@ -36,6 +36,13 @@ class LLM(BaseModel):
     model_name_or_path: str
 
 
+class IBM(BaseModel):
+    model_config = SettingsConfigDict(env_prefix="IBM", case_sensitive=False)
+    url: str
+    api_key: str
+    project_id: str
+
+
 class Embed(BaseModel):
     model_config = SettingsConfigDict(env_prefix="EMBED", case_sensitive=False)
     model_name: str
@@ -54,3 +61,4 @@ class Settings(BaseSettings):
     llm: LLM
     elasticsearch: Elasticsearch
     qdrant: Qdrant
+    ibm: IBM

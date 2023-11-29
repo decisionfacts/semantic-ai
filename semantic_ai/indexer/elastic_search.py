@@ -11,6 +11,8 @@ from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from semantic_ai.indexer.base import BaseIndexer
 from semantic_ai.utils import file_process, check_isfile, iter_to_aiter
 
+from elasticsearch import Elasticsearch
+
 
 class ElasticsearchIndexer(BaseIndexer):
 
@@ -22,7 +24,7 @@ class ElasticsearchIndexer(BaseIndexer):
             es_password: str | None = None,
             index_name: str,
             embedding: Optional[Embeddings] = HuggingFaceEmbeddings(),
-            ssl_verify: bool = True,
+            verify_certs: bool = True,
             es_api_key: Optional[str] = None
     ):
         super().__init__()
@@ -31,18 +33,30 @@ class ElasticsearchIndexer(BaseIndexer):
         self.es_password = es_password
         self.index_name = index_name
         self.embeddings = embedding
-        self.ssl_verify = {"verify_certs": ssl_verify}
+        self.verify_certs = verify_certs
         self.es_api_key = es_api_key
 
+        self.es_connection = Elasticsearch(self.url,
+                                           basic_auth=(self.es_user, self.es_password),
+                                           verify_certs=self.verify_certs
+                                           )
+
     async def create(self) -> ElasticsearchStore:
-        obj = ElasticsearchStore(
-            embedding=self.embeddings,
-            es_url=self.url,
-            es_user=self.es_user,
-            es_password=self.es_password,
-            index_name=f"{self.index_name}",
-            es_api_key=self.es_api_key
-        )
+        if not self.verify_certs:
+            obj = ElasticsearchStore(
+                embedding=self.embeddings,
+                index_name=f"{self.index_name}",
+                es_connection=self.es_connection
+            )
+        else:
+            obj = ElasticsearchStore(
+                embedding=self.embeddings,
+                es_url=self.url,
+                es_user=self.es_user,
+                es_password=self.es_password,
+                index_name=f"{self.index_name}",
+                es_api_key=self.es_api_key
+            )
         return obj
 
     @staticmethod

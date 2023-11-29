@@ -1,5 +1,5 @@
-Hugging Face
-============
+Hugging Face 🤗
+===============
 
 HuggingFace sentence_transformers embedding models.
 

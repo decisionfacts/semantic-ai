@@ -2,7 +2,7 @@ import logging
 from semantic_ai.connectors import get_connectors
 from semantic_ai.indexer import get_indexer
 from semantic_ai.llm import get_llm
-from semantic_ai.config import Sharepoint, Elasticsearch, Settings, LLM, Qdrant
+from semantic_ai.config import Sharepoint, Elasticsearch, Settings, LLM, Qdrant, IBM
 from semantic_ai.utils import iter_to_aiter, make_dirs, generate_llama_simple_prompt_template
 from semantic_ai.extract import extract as df_extract
 from semantic_ai import constants
@@ -39,7 +39,7 @@ async def __index_obj_create(settings: Settings | None = None):
                 es_user=elastic_search.user,
                 es_password=elastic_search.password,
                 index_name=elastic_search.index_name,
-                ssl_verify=elastic_search.ssl_verify
+                verify_certs=elastic_search.ssl_verify
             )
         else:
             _embed = await __embed_obj(settings.embedding_type, settings.embed.model_name)
@@ -49,7 +49,7 @@ async def __index_obj_create(settings: Settings | None = None):
                 es_user=elastic_search.user,
                 es_password=elastic_search.password,
                 index_name=elastic_search.index_name,
-                ssl_verify=elastic_search.ssl_verify,
+                verify_certs=elastic_search.ssl_verify,
                 embedding=_embed
             )
     elif settings.indexer_type == constants.QDRANT:
@@ -122,7 +122,7 @@ async def index(settings: Settings | None = None):
         extracted_output_dir = settings.extracted_dir_path
         extracted_output_dir = await make_dirs(extracted_output_dir, constants.JSON_OUTPUT_DIR)
         try:
-            index_obj = await __index_obj_create()
+            index_obj = await __index_obj_create(settings)
             await index_obj.index(extracted_output_dir)
             logger.info(f"{settings.indexer_type.capitalize()} object created")
         except Exception as ex:
@@ -150,6 +150,15 @@ async def search(settings: Settings | None = None) -> Search:
                                 model_name_or_path=llm_.model_name_or_path
                                 )
         prompt_template = constants.DEFAULT_PROMPT
+    elif _llm.model == constants.IBM:
+        llm_: IBM = settings.ibm
+        llm_obj = await get_llm(_llm.model,
+                                model_type=_llm.model_name_or_path,
+                                url=llm_.url,
+                                api_key=llm_.api_key,
+                                project_id=llm_.project_id
+                                )
+        prompt_template = constants.DEFAULT_PROMPT
     if not llm_obj:
         raise ValueError(f"{_llm.model} is not valid. Give valid credentials")
     llm_model = await llm_obj.llm_model()
@@ -158,4 +167,4 @@ async def search(settings: Settings | None = None) -> Search:
     return Search(model=llm_model,
                   load_vector_db=vector_db,
                   top_k=5,
-                  prompt_template=prompt_template)
+                  prompt=prompt_template)
