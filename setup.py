@@ -15,7 +15,7 @@ def requirements():
     # with open(requirements_path) as fobj:
     #     return [line.strip('\n') for line in fobj.readlines()]
     return [
-        "langchain==0.0.310",
+        "langchain==0.0.336",
         "sentence-transformers==2.2.2",
         "df-extract==0.0.2.1",
         "boto3~=1.21.20",
@@ -27,7 +27,7 @@ def requirements():
         "pydantic-settings==2.0.3",
         "fastapi==0.104.1",
         "auto-gptq==0.5.0",
-        "openai==0.28.1",
+        "openai==1.2.0",
         "uvicorn==0.24.0.post1",
         "tiktoken==0.5.1",
         "ibm-watson-machine-learning==1.0.327"
