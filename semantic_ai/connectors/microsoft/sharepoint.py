@@ -1,3 +1,5 @@
+import time
+
 import aiofiles
 import httpx
 import os
@@ -5,13 +7,23 @@ import logging
 
 from semantic_ai.connectors.base import BaseConnectors
 from semantic_ai.constants import DEFAULT_FOLDER_NAME
-from semantic_ai.utils import sync_to_async, iter_to_aiter
+from semantic_ai.utils import sync_to_async, iter_to_aiter, recursive_dir
 
 MICROSOFT_OAUTH_URL = "https://login.microsoftonline.com/{}/oauth2/v2.0/token"
 SITE_URL = "https://graph.microsoft.com/v1.0/sites"
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+async def get_path(url):
+    index = url.find('PowerAppsProd')
+    if index != -1:
+        index = url.find('PowerAppsProd')
+        return url[index + len('PowerAppsProd') + 1:]
+    else:
+        index = url.find('Documents')
+        return url[index + len('Documents') + 1:]
 
 
 class Sharepoint(BaseConnectors):
@@ -54,7 +66,7 @@ class Sharepoint(BaseConnectors):
             'Authorization': 'Bearer {}'.format(await self.__get_access_token())
         }
         async with httpx.AsyncClient() as cli:
-            r = await cli.get(url, headers=headers)
+            r = await cli.get(url, headers=headers, timeout=40)
         return await sync_to_async(r.json)
 
     async def __get_access_token(self):
@@ -90,23 +102,39 @@ class Sharepoint(BaseConnectors):
         sites = await self.__make_request(SITE_URL)
         return sites
 
-    async def file_download(self, file_name, file_download):
+    @staticmethod
+    async def file_download(file_name, file_download, file_path):
         async with httpx.AsyncClient() as client:
             async with client.stream('GET', file_download) as resp:
-                save_to_path = os.path.join(self.output_dir, file_name)
+                save_to_path = os.path.join(file_path, file_name)
                 async with aiofiles.open(save_to_path, "wb") as f:
                     async for chunk in resp.aiter_bytes():
                         await f.write(chunk)
 
-    async def iterate_items(self, items):
+    async def __make_api(self, uri, site_id, drive_id):
+        items_uri = f'https://graph.microsoft.com/v1.0/sites/{site_id}/drives/{drive_id}/root:/{uri}:/children'
+        items = await self.__make_request(items_uri)
+        await self.iterate_items(items, site_id, drive_id)
+
+    async def iterate_items(self, items, site_id, drive_id):
         async for file in iter_to_aiter(items.get('value', [])):
             folder = file.get('folder')
+            folder_url = file.get('webUrl')
+            parent_ref = file.get('parentReference').get('path')
+            parent_dir = parent_ref.split('/root:/')[-1]
             if folder is None:
                 file_name = file.get('name')
+                dir_path = f"{self.output_dir}/{parent_dir}"
+                async with aiofiles.open(f"{self.output_dir}/file_list.txt", 'a') as file_list:
+                    await file_list.write(f"File Name: {file_name} - Dir: {dir_path}\n")
+                await recursive_dir(dir_path)
                 file_download = file.get('@microsoft.graph.downloadUrl')
-                await self.file_download(file_name, file_download)
+                await self.file_download(file_name, file_download, dir_path)
             else:
-                pass
+                _dir_path = f"{self.output_dir}/{parent_dir}"
+                await recursive_dir(_dir_path)
+                path = await get_path(folder_url)
+                await self.__make_api(path, site_id, drive_id)
 
     async def download(
             self,
@@ -121,8 +149,9 @@ class Sharepoint(BaseConnectors):
             folder_url = f"{SITE_URL}/{site_id}/drives/{drive_id}/root:/{url}:/children"
             items = await self.__make_request(folder_url)
             logger.info(f"Downloading started. Please check in {self.output_dir} dir")
-            _download = await self.iterate_items(items)
+            _download = await self.iterate_items(items, site_id, drive_id)
             logger.info(f"Files are downloaded in {self.output_dir} dir")
         except Exception as ex:
+            print(ex)
             logger.info(f"Download failed")
             logger.error(f"Sharepoint download error: {ex}")

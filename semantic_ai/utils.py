@@ -117,3 +117,8 @@ async def _clear_cache(obj=None):
         del obj
     torch.cuda.empty_cache()
     gc.collect()
+
+
+async def recursive_dir(_path):
+    path = AsyncPath(_path)
+    await path.mkdir(parents=True, exist_ok=True)
