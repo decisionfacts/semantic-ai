@@ -66,7 +66,7 @@ class Sharepoint(BaseConnectors):
             'Authorization': 'Bearer {}'.format(await self.__get_access_token())
         }
         async with httpx.AsyncClient() as cli:
-            r = await cli.get(url, headers=headers, timeout=40)
+            r = await cli.get(url, headers=headers, timeout=60)
         return await sync_to_async(r.json)
 
     async def __get_access_token(self):
@@ -131,7 +131,8 @@ class Sharepoint(BaseConnectors):
                 file_download = file.get('@microsoft.graph.downloadUrl')
                 await self.file_download(file_name, file_download, dir_path)
             else:
-                _dir_path = f"{self.output_dir}/{parent_dir}"
+                folder_name = file.get('name')
+                _dir_path = f"{self.output_dir}/{parent_dir}/{folder_name}"
                 await recursive_dir(_dir_path)
                 path = await get_path(folder_url)
                 await self.__make_api(path, site_id, drive_id)
