@@ -7,7 +7,7 @@ import logging
 
 from semantic_ai.connectors.base import BaseConnectors
 from semantic_ai.constants import DEFAULT_FOLDER_NAME
-from semantic_ai.utils import sync_to_async, iter_to_aiter, recursive_dir
+from semantic_ai.utils import sync_to_async, iter_to_aiter, recursive_dir, empty_folder
 
 MICROSOFT_OAUTH_URL = "https://login.microsoftonline.com/{}/oauth2/v2.0/token"
 SITE_URL = "https://graph.microsoft.com/v1.0/sites"
@@ -152,6 +152,9 @@ class Sharepoint(BaseConnectors):
             logger.info(f"Downloading started. Please check in {self.output_dir} dir")
             _download = await self.iterate_items(items, site_id, drive_id)
             logger.info(f"Files are downloaded in {self.output_dir} dir")
+            logger.info(f"Empty folder checking and writing in {self.output_dir}/{url}")
+            await empty_folder(f"{self.output_dir}/{url}", self.output_dir)
+            logger.info(f"Process Completed")
         except Exception as ex:
             print(ex)
             logger.info(f"Download failed")

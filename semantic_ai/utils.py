@@ -3,6 +3,8 @@ import functools
 import importlib
 import os
 import gc
+
+import aiofiles
 import torch
 
 from concurrent.futures import ThreadPoolExecutor
@@ -122,3 +124,11 @@ async def _clear_cache(obj=None):
 async def recursive_dir(_path):
     path = AsyncPath(_path)
     await path.mkdir(parents=True, exist_ok=True)
+
+
+async def empty_folder(dir_path, output_dir):
+    walk_dir = await sync_to_async(os.walk, dir_path)
+    async for root, dirs, files in iter_to_aiter(walk_dir):
+        if not len(dirs) and not len(files):
+            async with aiofiles.open(f"{output_dir}/empty.txt", "a") as empty:
+                await empty.write(f"{root}\n")
