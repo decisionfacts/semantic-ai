@@ -1,6 +1,7 @@
 import asyncio
 import os
 
+import aiofiles
 from aiopath import AsyncPath
 
 from typing import (
@@ -45,21 +46,12 @@ class ElasticsearchIndexer(BaseIndexer):
                                            )
 
     async def create(self) -> ElasticsearchStore:
-        if not self.verify_certs:
-            obj = ElasticsearchStore(
-                embedding=self.embeddings,
-                index_name=f"{self.index_name}",
-                es_connection=self.es_connection
-            )
-        else:
-            obj = ElasticsearchStore(
-                embedding=self.embeddings,
-                es_url=self.url,
-                es_user=self.es_user,
-                es_password=self.es_password,
-                index_name=f"{self.index_name}",
-                es_api_key=self.es_api_key
-            )
+        obj = ElasticsearchStore(
+            embedding=self.embeddings,
+            index_name=f"{self.index_name}",
+            es_connection=self.es_connection,
+            es_api_key=self.es_api_key
+        )
         return obj
 
     @staticmethod
@@ -99,10 +91,9 @@ class ElasticsearchIndexer(BaseIndexer):
                         await ElasticsearchStore.afrom_documents(
                             documents=documents,
                             embedding=self.embeddings,
-                            es_url=self.url,
-                            es_user=self.es_user,
-                            es_password=self.es_password,
-                            index_name=self.index_name
+                            index_name=self.index_name,
+                            es_connection=self.es_connection
+
                         )
                 except Exception as ex:
                     print(f"{ex}")
@@ -113,10 +104,8 @@ class ElasticsearchIndexer(BaseIndexer):
                             await ElasticsearchStore.afrom_documents(
                                 documents=docs,
                                 embedding=self.embeddings,
-                                es_url=self.url,
-                                es_user=self.es_user,
-                                es_password=self.es_password,
-                                index_name=self.index_name
+                                index_name=self.index_name,
+                                es_connection=self.es_connection
                             )
                 except Exception as ex:
                     print(f"{ex}")
