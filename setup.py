@@ -20,17 +20,18 @@ def requirements():
         "df-extract==0.0.2.1",
         "boto3~=1.21.20",
         "elasticsearch==8.8.2",
-        "qdrant-client==1.3.2",
-        "jq==1.6.0",
+        "qdrant-client==1.4.0",
+        "jq==1.4.0",
         "httpx==0.25.0",
-        "pydantic==2.4.2",
-        "pydantic-settings==2.0.3",
-        "fastapi==0.104.1",
+        "pydantic==1.10.11",
+        "fastapi==0.95.1",
         "auto-gptq==0.5.0",
         "openai==1.2.0",
-        "uvicorn==0.24.0.post1",
+        "uvicorn==0.22.0",
         "tiktoken==0.5.1",
-        "ibm-watson-machine-learning==1.0.327"
+        "ibm-watson-machine-learning==1.0.327",
+        "langchain-experimental==0.0.24",
+        "python-dotenv==1.0.0"
     ]
 
 
