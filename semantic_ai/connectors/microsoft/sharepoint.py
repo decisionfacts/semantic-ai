@@ -66,7 +66,7 @@ class Sharepoint(BaseConnectors):
             'Authorization': 'Bearer {}'.format(await self.__get_access_token())
         }
         async with httpx.AsyncClient() as cli:
-            r = await cli.get(url, headers=headers, timeout=60)
+            r = await cli.get(url, headers=headers, timeout=30)
         return await sync_to_async(r.json)
 
     async def __get_access_token(self):
