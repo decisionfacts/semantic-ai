@@ -55,7 +55,7 @@ class ElasticsearchIndexer(BaseIndexer):
         return obj
 
     @staticmethod
-    async def from_documents(extracted_json_dir):
+    async def from_documents(extracted_json_dir, recursive: bool):
         if extracted_json_dir:
             datas = []
             dir_path = AsyncPath(extracted_json_dir)
@@ -66,24 +66,35 @@ class ElasticsearchIndexer(BaseIndexer):
                 await asyncio.sleep(1)
                 yield data
             elif await dir_path.is_dir():
-                walk_dir = await sync_to_async(os.walk, dir_path)
-                async for root, dirs, files in iter_to_aiter(walk_dir):
-                    for file in files:
-                        path = AsyncPath(f"{root}/{file}")
-                        file_path = str(path)
-                        file_ext = path.suffix.lower()
-                        _data = await file_process(file_ext=file_ext, file_path=file_path)
-                        datas.append(_data)
-                    else:
-                        pass
-                await asyncio.sleep(1)
-                yield datas
+                if recursive:
+                    walk_dir = await sync_to_async(os.walk, dir_path)
+                    async for root, dirs, files in iter_to_aiter(walk_dir):
+                        for file in files:
+                            path = AsyncPath(f"{root}/{file}")
+                            file_path = str(path)
+                            file_ext = path.suffix.lower()
+                            _data = await file_process(file_ext=file_ext, file_path=file_path)
+                            datas.append(_data)
+                        else:
+                            pass
+                    await asyncio.sleep(1)
+                    yield datas
+                else:
+                    async for path in dir_path.iterdir():
+                        if await path.is_file():
+                            file_path = str(path)
+                            file_ext = path.suffix.lower()
+                            _data = await file_process(file_ext=file_ext, file_path=file_path)
+                            datas.append(_data)
+                        else:
+                            pass
+                    yield datas
         else:
             raise ValueError(f"Please give valid file or directory path.")
 
-    async def index(self, extracted_json_dir_or_file: str):
+    async def index(self, extracted_json_dir_or_file: str, recursive: bool = False):
         if extracted_json_dir_or_file:
-            documents_data = self.from_documents(extracted_json_dir_or_file)
+            documents_data = self.from_documents(extracted_json_dir_or_file, recursive)
             documents = await documents_data.asend(None)
             if await check_isfile(extracted_json_dir_or_file):
                 try:

@@ -111,12 +111,12 @@ class Sharepoint(BaseConnectors):
                     async for chunk in resp.aiter_bytes():
                         await f.write(chunk)
 
-    async def __make_api(self, uri, site_id, drive_id):
+    async def __make_api(self, uri, site_id, drive_id, recursive):
         items_uri = f'https://graph.microsoft.com/v1.0/sites/{site_id}/drives/{drive_id}/root:/{uri}:/children'
         items = await self.__make_request(items_uri)
-        await self.iterate_items(items, site_id, drive_id)
+        await self.iterate_items(items, site_id, drive_id, recursive)
 
-    async def iterate_items(self, items, site_id, drive_id):
+    async def iterate_items(self, items, site_id, drive_id, recursive: bool):
         async for file in iter_to_aiter(items.get('value', [])):
             folder = file.get('folder')
             folder_url = file.get('webUrl')
@@ -130,18 +130,19 @@ class Sharepoint(BaseConnectors):
                 await recursive_dir(dir_path)
                 file_download = file.get('@microsoft.graph.downloadUrl')
                 await self.file_download(file_name, file_download, dir_path)
-            else:
+            elif folder and recursive:
                 folder_name = file.get('name')
                 _dir_path = f"{self.output_dir}/{parent_dir}/{folder_name}"
                 await recursive_dir(_dir_path)
                 path = await get_path(folder_url)
-                await self.__make_api(path, site_id, drive_id)
+                await self.__make_api(path, site_id, drive_id, recursive)
 
     async def download(
             self,
             site_id,
             drive_id,
             folder_url: str = None,
+            recursive: bool = False
     ):
         if not folder_url:
             raise ValueError(f"Please give valid folder url path for which folder download. e.g. /Myfolder/child/")
@@ -150,7 +151,7 @@ class Sharepoint(BaseConnectors):
             folder_url = f"{SITE_URL}/{site_id}/drives/{drive_id}/root:/{url}:/children"
             items = await self.__make_request(folder_url)
             logger.info(f"Downloading started. Please check in {self.output_dir} dir")
-            _download = await self.iterate_items(items, site_id, drive_id)
+            _download = await self.iterate_items(items, site_id, drive_id, recursive)
             logger.info(f"Files are downloaded in {self.output_dir} dir")
             logger.info(f"Empty folder checking and writing in {self.output_dir}/{url}")
             await empty_folder(f"{self.output_dir}/{url}", self.output_dir)

@@ -123,7 +123,8 @@ async def extract_content(
 async def extract(
         file_path: str,
         output_dir: str = None,
-        as_json: bool = False
+        as_json: bool = False,
+        recursive: bool = False
 ):
     input_path = AsyncPath(file_path)
     if await input_path.is_file():
@@ -136,15 +137,22 @@ async def extract(
     elif await input_path.is_dir():
         logger.info(f"Extraction processing")
         output_name = file_path.rstrip('/').split('/')[-1]
-        walk_dir = await sync_to_async(os.walk, input_path)
-        async for root, dirs, files in iter_to_aiter(walk_dir):
-            for file in files:
-                path = f"{root}/{file}"
-                os.makedirs(root.replace(output_name, 'json_output_dir'), exist_ok=True)
-                await extract_content(path=AsyncPath(path),
-                                      output_dir=root.replace(output_name, 'json_output_dir'),
-                                      meta_output_dir=output_dir,
-                                      as_json=as_json)
+        if recursive:
+            walk_dir = await sync_to_async(os.walk, input_path)
+            async for root, dirs, files in iter_to_aiter(walk_dir):
+                for file in files:
+                    path = f"{root}/{file}"
+                    os.makedirs(root.replace(output_name, 'json_output_dir'), exist_ok=True)
+                    await extract_content(path=AsyncPath(path),
+                                          output_dir=root.replace(output_name, 'json_output_dir'),
+                                          meta_output_dir=output_dir,
+                                          as_json=as_json)
+        else:
+            async for path in input_path.iterdir():
+                if await path.is_file():
+                    await extract_content(path=path,
+                                          output_dir=output_dir,
+                                          as_json=as_json)
         logger.info(f"Extraction completed")
     else:
         logger.info(f"{input_path} is unsupported")
