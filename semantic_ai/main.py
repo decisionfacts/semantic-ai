@@ -3,6 +3,7 @@ import argparse
 import uvicorn
 
 from fastapi import FastAPI, HTTPException, status
+from pydantic import BaseModel
 from semantic_ai import search
 from semantic_ai.config import Settings
 
@@ -13,17 +14,26 @@ app = FastAPI(title="Semantic AI",
               docs_url=f"/semantic-ai/docs")
 
 
+class DocSearch(BaseModel):
+    query: str
+
+
+@app.on_event("startup")
+async def on_startup():
+    settings = getattr(app, 'settings', None)
+
+
 @app.get("/semantic-ai")
 async def info():
     return {'name': app.title}
 
 
 @app.post("/semantic-ai/search")
-async def semantic_search(query: str):
+async def semantic_search(doc_search: DocSearch):
     try:
-        if query:
+        if doc_search.query:
             search_obj = await search(settings=getattr(app, 'settings', None))
-            return await search_obj.generate(query=query)
+            return await search_obj.generate(query=doc_search.query)
     except Exception as ex:
         logger.error('Search exception => ', exc_info=ex)
         raise HTTPException(
