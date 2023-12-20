@@ -28,7 +28,7 @@ def requirements():
         "auto-gptq==0.5.0",
         "openai==1.2.0",
         "uvicorn==0.22.0",
-        "tiktoken==0.5.1",
+        "tiktoken==0.4.0",
         "ibm-watson-machine-learning==1.0.327",
         "langchain-experimental==0.0.24",
         "python-dotenv==1.0.0"
@@ -37,7 +37,7 @@ def requirements():
 
 setup(
     name='semantic_ai',
-    version='v0.0.3',
+    version='v0.0.4',
     description='Sematic AI RAG System',
     long_description=readme(),
     long_description_content_type='text/markdown',
