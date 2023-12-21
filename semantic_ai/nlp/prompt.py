@@ -33,7 +33,7 @@ Question: {input}
 Provide your SQLQuery, Currency and Answer in JSON form. Reply with only the answer in JSON form and include no other commentary:"""
 
 
-class PromptNLP:
+class Prompt:
 
     def __init__(self):
         self.prompt = PromptTemplate(
@@ -47,7 +47,7 @@ class PromptNLP:
             prompt = self.prompt
         return LLMChain(llm=await openai_llm.llm_model(), prompt=prompt)
 
-    async def get_sql_db_chain(self, query: str, db):
+    async def get_db_context(self, query: str, db):
         openai_llm = Openai()
         db_chain = SQLDatabaseChain.from_llm(openai_llm, db, verbose=True)
         db_context = db_chain(query)

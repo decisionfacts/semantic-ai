@@ -8,7 +8,7 @@ from semantic_ai.utils import iter_to_aiter, make_dirs, generate_llama_simple_pr
 from semantic_ai.extract import extract as df_extract
 from semantic_ai import constants
 from semantic_ai.search.semantic_search import Search
-from semantic_ai.llm.prompt_nlp import PromptNLP
+from semantic_ai.nlp.prompt import Prompt
 
 from langchain.embeddings.openai import OpenAIEmbeddings
 
@@ -157,7 +157,7 @@ async def db_search(query, settings: Settings | None = None):
     else:
         raise "The connector type does not supporting"
     connection_obj = await connect.connect_db()
-    nlp_to_sql_obj = PromptNLP()
+    nlp_to_sql_obj = Prompt()
     nlp_to_sql = await nlp_to_sql_obj.nlp_to_sql(data_base=connection_obj,
                                                  normal_text=query)
     print(nlp_to_sql)
