@@ -15,28 +15,29 @@ def requirements():
     # with open(requirements_path) as fobj:
     #     return [line.strip('\n') for line in fobj.readlines()]
     return [
-        "langchain==0.0.310",
+        "langchain==0.0.336",
         "sentence-transformers==2.2.2",
         "df-extract==0.0.2.1",
         "boto3~=1.21.20",
         "elasticsearch==8.8.2",
-        "qdrant-client==1.3.2",
-        "jq==1.6.0",
+        "qdrant-client==1.4.0",
+        "jq==1.4.0",
         "httpx==0.25.0",
-        "pydantic==2.4.2",
-        "pydantic-settings==2.0.3",
-        "fastapi==0.104.1",
+        "pydantic==1.10.11",
+        "fastapi==0.95.1",
         "auto-gptq==0.5.0",
-        "openai==0.28.1",
-        "uvicorn==0.24.0.post1",
-        "tiktoken==0.5.1",
-        "ibm-watson-machine-learning==1.0.327"
+        "openai==1.2.0",
+        "uvicorn==0.22.0",
+        "tiktoken==0.4.0",
+        "ibm-watson-machine-learning==1.0.327",
+        "langchain-experimental==0.0.24",
+        "python-dotenv==1.0.0"
     ]
 
 
 setup(
     name='semantic_ai',
-    version='v0.0.3',
+    version='v0.0.4',
     description='Sematic AI RAG System',
     long_description=readme(),
     long_description_content_type='text/markdown',

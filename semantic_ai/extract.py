@@ -1,3 +1,4 @@
+import os
 import logging
 import aiofiles
 import json
@@ -5,6 +6,7 @@ from aiopath import AsyncPath
 
 from df_extract.base import ImageExtract
 from df_extract import pptx, pdf, docx, image, csv
+from semantic_ai.utils import sync_to_async, iter_to_aiter
 
 from semantic_ai.utils import create_dir
 
@@ -64,10 +66,14 @@ async def add_non_supported_file(file_name, _dir):
 async def extract_content(
         path,
         output_dir,
-        as_json: bool
+        as_json: bool,
+        meta_output_dir: str | None = None
 ):
     file_path = str(path)
-    meta_path = await create_dir(output_dir, "meta")
+    if meta_output_dir:
+        meta_path = await create_dir(meta_output_dir, "meta")
+    else:
+        meta_path = await create_dir(output_dir, "meta")
     image_extract = ImageExtract(model_download_enabled=True)
     try:
         file_ext = path.suffix.lower()
@@ -117,22 +123,36 @@ async def extract_content(
 async def extract(
         file_path: str,
         output_dir: str = None,
-        as_json: bool = False
+        as_json: bool = False,
+        recursive: bool = False
 ):
     input_path = AsyncPath(file_path)
     if await input_path.is_file():
         logger.info(f"Extraction processing")
         await extract_content(path=input_path,
                               output_dir=output_dir,
+                              meta_output_dir=output_dir,
                               as_json=as_json)
         logger.info(f"Extraction completed")
     elif await input_path.is_dir():
         logger.info(f"Extraction processing")
-        async for path in input_path.iterdir():
-            if await path.is_file():
-                await extract_content(path=path,
-                                      output_dir=output_dir,
-                                      as_json=as_json)
+        output_name = file_path.rstrip('/').split('/')[-1]
+        if recursive:
+            walk_dir = await sync_to_async(os.walk, input_path)
+            async for root, dirs, files in iter_to_aiter(walk_dir):
+                for file in files:
+                    path = f"{root}/{file}"
+                    os.makedirs(root.replace(output_name, 'json_output_dir'), exist_ok=True)
+                    await extract_content(path=AsyncPath(path),
+                                          output_dir=root.replace(output_name, 'json_output_dir'),
+                                          meta_output_dir=output_dir,
+                                          as_json=as_json)
+        else:
+            async for path in input_path.iterdir():
+                if await path.is_file():
+                    await extract_content(path=path,
+                                          output_dir=output_dir,
+                                          as_json=as_json)
         logger.info(f"Extraction completed")
     else:
         logger.info(f"{input_path} is unsupported")

@@ -1,3 +1,5 @@
+import asyncio
+import os
 from typing import Optional, Any
 from aiopath import AsyncPath
 
@@ -8,7 +10,7 @@ from langchain.embeddings.base import Embeddings
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 
 from semantic_ai.indexer.base import BaseIndexer
-from semantic_ai.utils import file_process, check_isfile, iter_to_aiter
+from semantic_ai.utils import file_process, check_isfile, iter_to_aiter, sync_to_async
 
 
 class QdrantIndexer(BaseIndexer):
@@ -116,7 +118,7 @@ class QdrantIndexer(BaseIndexer):
         )
 
     @staticmethod
-    async def from_documents(extracted_json_dir):
+    async def from_documents(extracted_json_dir, recursive):
         if extracted_json_dir:
             datas = []
             dir_path = AsyncPath(extracted_json_dir)
@@ -124,44 +126,62 @@ class QdrantIndexer(BaseIndexer):
                 file_path = str(dir_path)
                 file_ext = dir_path.suffix.lower()
                 data = await file_process(file_ext=file_ext, file_path=file_path)
-                return data
+                await asyncio.sleep(1)
+                yield data
             elif await dir_path.is_dir():
-                async for path in dir_path.iterdir():
-                    if await path.is_file():
-                        file_path = str(path)
-                        file_ext = path.suffix.lower()
-                        _data = await file_process(file_ext=file_ext, file_path=file_path)
-                        datas.append(_data)
-                    else:
-                        pass
-                return datas
+                if recursive:
+                    walk_dir = await sync_to_async(os.walk, dir_path)
+                    async for root, dirs, files in iter_to_aiter(walk_dir):
+                        for file in files:
+                            path = AsyncPath(f"{root}/{file}")
+                            file_path = str(path)
+                            file_ext = path.suffix.lower()
+                            _data = await file_process(file_ext=file_ext, file_path=file_path)
+                            datas.append(_data)
+                        else:
+                            pass
+                    await asyncio.sleep(1)
+                    yield datas
+                else:
+                    async for path in dir_path.iterdir():
+                        if await path.is_file():
+                            file_path = str(path)
+                            file_ext = path.suffix.lower()
+                            _data = await file_process(file_ext=file_ext, file_path=file_path)
+                            datas.append(_data)
+                        else:
+                            pass
+                    yield datas
         else:
             raise ValueError(f"Please give valid file or directory path.")
 
-    async def index(self, extracted_json_dir: str):
-        if extracted_json_dir:
-            documents = await self.from_documents(extracted_json_dir)
-            if await check_isfile(extracted_json_dir):
-                try:
-                    await Qdrant.afrom_documents(
-                        documents=documents,
-                        embedding=self.embeddings,
-                        url=self.url,
-                        api_key=self.api_key,
-                        collection_name=self.collection_name
-                    )
-                except Exception as ex:
-                    print(f"{ex}")
-            else:
-                try:
-                    async for docs in iter_to_aiter(documents):
+    async def index(self, extracted_json_dir_or_file: str, recursive: bool):
+        if extracted_json_dir_or_file:
+            documents_data = self.from_documents(extracted_json_dir_or_file, recursive)
+            documents = await documents_data.asend(None)
+            if await check_isfile(extracted_json_dir_or_file):
+                if documents:
+                    try:
                         await Qdrant.afrom_documents(
-                            documents=docs,
+                            documents=documents,
                             embedding=self.embeddings,
                             url=self.url,
                             api_key=self.api_key,
                             collection_name=self.collection_name
                         )
+                    except Exception as ex:
+                        print(f"{ex}")
+            else:
+                try:
+                    async for docs in iter_to_aiter(documents):
+                        if docs:
+                            await Qdrant.afrom_documents(
+                                documents=docs,
+                                embedding=self.embeddings,
+                                url=self.url,
+                                api_key=self.api_key,
+                                collection_name=self.collection_name
+                            )
                 except Exception as ex:
                     print(f"{ex}")
         else:

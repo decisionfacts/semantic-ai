@@ -1,3 +1,7 @@
+import asyncio
+import os
+
+import aiofiles
 from aiopath import AsyncPath
 
 from typing import (
@@ -9,7 +13,7 @@ from langchain.vectorstores import ElasticsearchStore
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 
 from semantic_ai.indexer.base import BaseIndexer
-from semantic_ai.utils import file_process, check_isfile, iter_to_aiter
+from semantic_ai.utils import file_process, check_isfile, iter_to_aiter, sync_to_async
 
 from elasticsearch import Elasticsearch
 
@@ -42,25 +46,16 @@ class ElasticsearchIndexer(BaseIndexer):
                                            )
 
     async def create(self) -> ElasticsearchStore:
-        if not self.verify_certs:
-            obj = ElasticsearchStore(
-                embedding=self.embeddings,
-                index_name=f"{self.index_name}",
-                es_connection=self.es_connection
-            )
-        else:
-            obj = ElasticsearchStore(
-                embedding=self.embeddings,
-                es_url=self.url,
-                es_user=self.es_user,
-                es_password=self.es_password,
-                index_name=f"{self.index_name}",
-                es_api_key=self.es_api_key
-            )
+        obj = ElasticsearchStore(
+            embedding=self.embeddings,
+            index_name=f"{self.index_name}",
+            es_connection=self.es_connection,
+            es_api_key=self.es_api_key
+        )
         return obj
 
     @staticmethod
-    async def from_documents(extracted_json_dir):
+    async def from_documents(extracted_json_dir, recursive: bool):
         if extracted_json_dir:
             datas = []
             dir_path = AsyncPath(extracted_json_dir)
@@ -68,46 +63,61 @@ class ElasticsearchIndexer(BaseIndexer):
                 file_path = str(dir_path)
                 file_ext = dir_path.suffix.lower()
                 data = await file_process(file_ext=file_ext, file_path=file_path)
-                return data
+                await asyncio.sleep(1)
+                yield data
             elif await dir_path.is_dir():
-                async for path in dir_path.iterdir():
-                    if await path.is_file():
-                        file_path = str(path)
-                        file_ext = path.suffix.lower()
-                        _data = await file_process(file_ext=file_ext, file_path=file_path)
-                        datas.append(_data)
-                    else:
-                        pass
-                return datas
+                if recursive:
+                    walk_dir = await sync_to_async(os.walk, dir_path)
+                    async for root, dirs, files in iter_to_aiter(walk_dir):
+                        for file in files:
+                            path = AsyncPath(f"{root}/{file}")
+                            file_path = str(path)
+                            file_ext = path.suffix.lower()
+                            _data = await file_process(file_ext=file_ext, file_path=file_path)
+                            datas.append(_data)
+                        else:
+                            pass
+                    await asyncio.sleep(1)
+                    yield datas
+                else:
+                    async for path in dir_path.iterdir():
+                        if await path.is_file():
+                            file_path = str(path)
+                            file_ext = path.suffix.lower()
+                            _data = await file_process(file_ext=file_ext, file_path=file_path)
+                            datas.append(_data)
+                        else:
+                            pass
+                    yield datas
         else:
             raise ValueError(f"Please give valid file or directory path.")
 
-    async def index(self, extracted_json_dir_or_file: str):
+    async def index(self, extracted_json_dir_or_file: str, recursive: bool = False):
         if extracted_json_dir_or_file:
-            documents = await self.from_documents(extracted_json_dir_or_file)
+            documents_data = self.from_documents(extracted_json_dir_or_file, recursive)
+            documents = await documents_data.asend(None)
             if await check_isfile(extracted_json_dir_or_file):
                 try:
-                    await ElasticsearchStore.afrom_documents(
-                        documents=documents,
-                        embedding=self.embeddings,
-                        es_url=self.url,
-                        es_user=self.es_user,
-                        es_password=self.es_password,
-                        index_name=self.index_name
-                    )
+                    if documents:
+                        await ElasticsearchStore.afrom_documents(
+                            documents=documents,
+                            embedding=self.embeddings,
+                            index_name=self.index_name,
+                            es_connection=self.es_connection
+
+                        )
                 except Exception as ex:
                     print(f"{ex}")
             else:
                 try:
                     async for docs in iter_to_aiter(documents):
-                        await ElasticsearchStore.afrom_documents(
-                            documents=docs,
-                            embedding=self.embeddings,
-                            es_url=self.url,
-                            es_user=self.es_user,
-                            es_password=self.es_password,
-                            index_name=self.index_name
-                        )
+                        if docs:
+                            await ElasticsearchStore.afrom_documents(
+                                documents=docs,
+                                embedding=self.embeddings,
+                                index_name=self.index_name,
+                                es_connection=self.es_connection
+                            )
                 except Exception as ex:
                     print(f"{ex}")
         else:
