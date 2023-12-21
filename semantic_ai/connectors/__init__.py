@@ -1,10 +1,14 @@
 from semantic_ai.connectors.microsoft.sharepoint import Sharepoint
+from semantic_ai.connectors.microsoft.sqlite import Sqlite
+from semantic_ai.connectors.microsoft.mysql import Mysql
 
 from semantic_ai.utils import get_dynamic_class
 from semantic_ai.constants import CONNECTORS_LIST
 
 __all__ = [
     'Sharepoint',
+    'Sqlite',
+    'Mysql',
     'get_connectors'
 ]
 

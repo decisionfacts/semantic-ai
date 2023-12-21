@@ -48,6 +48,20 @@ class Embed(BaseModel):
     model_name: str
 
 
+class Sqlite(BaseModel):
+    model_config = SettingsConfigDict(env_prefix="SQLITE", case_sensitive=False)
+    sql_path: str
+
+
+class Mysql(BaseModel):
+    model_config = SettingsConfigDict(env_prefix="MYSQL", case_sensitive=False)
+    host: str
+    user: str
+    password: str
+    database: str
+    port: str
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter='__', extra='ignore')
     connector_type: str
@@ -62,3 +76,6 @@ class Settings(BaseSettings):
     elasticsearch: Elasticsearch
     qdrant: Qdrant
     ibm: IBM
+    sqlite: Sqlite
+    mysql: Mysql
+

@@ -1,12 +1,14 @@
+import json
 import logging
 from semantic_ai.connectors import get_connectors
 from semantic_ai.indexer import get_indexer
 from semantic_ai.llm import get_llm
-from semantic_ai.config import Sharepoint, Elasticsearch, Settings, LLM, Qdrant, IBM
+from semantic_ai.config import Sharepoint, Elasticsearch, Settings, LLM, Qdrant, IBM, Sqlite, Mysql
 from semantic_ai.utils import iter_to_aiter, make_dirs, generate_llama_simple_prompt_template
 from semantic_ai.extract import extract as df_extract
 from semantic_ai import constants
 from semantic_ai.search.semantic_search import Search
+from semantic_ai.llm.prompt_nlp import PromptNLP
 
 from langchain.embeddings.openai import OpenAIEmbeddings
 
@@ -130,6 +132,38 @@ async def index(settings: Settings | None = None):
             logger.error(ex)
     else:
         raise ValueError(f"Give valid credentials or load properly environment variable.")
+
+
+async def db_search(query, settings: Settings | None = None):
+    settings = await _load_settings(settings)
+    if not settings.connector_type:
+        raise "The connector type does not supporting"
+
+    if settings.connector_type == constants.SQLITE:
+        sqlite: Sqlite = settings.sqlite
+        connect = await get_connectors(settings.connector_type,
+                                       sql_path=sqlite.sql_path
+                                       )
+    elif settings.connector_type == constants.MYSQL:
+        mysql: Mysql = settings.mysql
+        connect = await get_connectors(settings.connector_type,
+                                       host=mysql.host,
+                                       user=mysql.user,
+                                       password=mysql.password,
+                                       database=mysql.database,
+                                       port=mysql.port
+                                       )
+
+    else:
+        raise "The connector type does not supporting"
+    connection_obj = await connect.connect_db()
+    nlp_to_sql_obj = PromptNLP()
+    nlp_to_sql = await nlp_to_sql_obj.nlp_to_sql(data_base=connection_obj,
+                                                 normal_text=query)
+    print(nlp_to_sql)
+    data = json.loads(nlp_to_sql)
+    result = await connect.execution(data)
+    return result
 
 
 async def search(settings: Settings | None = None) -> Search:
