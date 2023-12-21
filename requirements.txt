@@ -5,10 +5,10 @@ df-extract==0.0.2.1
 boto3~=1.21.20
 elasticsearch==8.8.2
 qdrant-client==1.4.0
-jq==1.4.1
+jq==1.4.0
 httpx==0.25.0
 pydantic==1.10.11
-auto-gptq==0.5.0
+auto-gptq==0.4.0
 uvicorn==0.22.0
 tiktoken==0.5.1
 ibm-watson-machine-learning==1.0.327
