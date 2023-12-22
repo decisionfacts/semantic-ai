@@ -1,7 +1,7 @@
 SQLITE
 ======
 
-.. figure:: https://cdn.iconscout.com/icon/free/png-512/free-sqlite-282687.png?f=webp&w=256
+.. figure:: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDlMIPeUYeHYEWmS0hX5Qt3WrbA-wVvk2nrw&usqp=CAU
    :alt: Logo
    :align: left
    :width: 100px
@@ -35,13 +35,20 @@ This documents covers how to interact with SQLITE database using our library.
     sqlite = Sqlite(sql_path=file_path)
     conn = await sqlite.connect_db()
 
-**To create natural language processing**
+**To create natural language processing for normal text**
 
 .. code-block:: python
 
     from semantic_ai.nlp.prompt import Prompt
 
     prompt = Prompt()
-    await prompt.nlp_to_sql(data_base=conn, normal_text="")
+    prompt_res = await prompt.nlp_to_sql(data_base=conn, normal_text="query")
+
+**To get answer from NLP**
+
+.. code-block:: python
+
+    data = json.loads(prompt_res)
+    result = sql.execution(data)
 
 
