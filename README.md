@@ -54,6 +54,18 @@ QDRANT__API_KEY="<apikey>"
 LLM__MODEL="<llm_model>" # llama, openai
 LLM__MODEL_NAME_OR_PATH="" # model name
 OPENAI_API_KEY="<openai_api_key>" # if using openai
+
+
+# SQL
+SQLITE_SQL_PATH="<database_path>" # sqlit db path
+
+# MYSQL
+MYSQL_HOST="<host_name>" # localhost or Ip Address
+MYSQL_USER="<user_name>"
+MYSQL_PASSWORD="<password>"
+MYSQL_DATABASE="<database_name>"
+MYSQL_PORT="<port>" # default port is 3306
+
 ```
 Method 1:
     To load the .env file. Env file should have the credentials
@@ -72,6 +84,7 @@ from semantic_ai.config import Settings
 settings = Settings()
 ```
 
+# Un-Structure 
 ### 1. Import the module
 ```python
 import asyncio
@@ -112,6 +125,45 @@ connection = Sharepoint(client_id=CLIENT_ID,
                         host_name=HOST_NAME,
                         scope=SCOPE)
 ```
+
+# Structure
+
+
+### 1. Import the module
+```python
+import asyncio
+import semantic_ai
+```
+
+### 2. The database connection  
+
+#### Sqlite:
+file_path= <database_file_path>
+
+sql = Sqlite(sql_path=file_path)
+
+
+#### Mysql:
+```
+sql = Mysql(
+    host=<host_name>,
+    user=<user_name>,
+    password=<password>,
+    database=<database>,
+    port=<port_number>  # 3306 is default port
+)
+
+```
+
+
+### 3. To generate the answer from db using retrieval LLM model.
+```
+query = ""
+search_obj = await semantic_ai.db_search(query=query)
+
+```
+
+
 ## Run in the server
 ```shell
 $ semantic_ai serve -f .env

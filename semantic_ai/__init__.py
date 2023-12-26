@@ -153,14 +153,12 @@ async def db_search(query, settings: Settings | None = None):
                                        database=mysql.database,
                                        port=mysql.port
                                        )
-
     else:
         raise "The connector type does not supporting"
     connection_obj = await connect.connect_db()
     nlp_to_sql_obj = Prompt()
     nlp_to_sql = await nlp_to_sql_obj.nlp_to_sql(data_base=connection_obj,
                                                  normal_text=query)
-    print(nlp_to_sql)
     data = json.loads(nlp_to_sql)
     result = await connect.execution(data)
     return result
