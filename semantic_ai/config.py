@@ -52,6 +52,20 @@ class Embed(BaseModel):
     model_name: str = os.getenv("EMBED_MODEL_NAME")
 
 
+class Sqlite(BaseModel):
+    # model_config = SettingsConfigDict(env_prefix="SQLITE", case_sensitive=False)
+    sql_path: str = os.getenv("SQLITE_SQL_PATH")
+
+
+class Mysql(BaseModel):
+    # model_config = SettingsConfigDict(env_prefix="MYSQL", case_sensitive=False)
+    host: str = os.getenv("MYSQL_HOST")
+    user: str = os.getenv("MYSQL_USER")
+    password: str = os.getenv("MYSQL_PASSWORD")
+    database: str = os.getenv("MYSQL_DATABASE")
+    port: str = os.getenv("MYSQL_PORT")
+
+
 class Settings(BaseSettings):
     # model_config = ConfigDict(env_nested_delimiter='__', extra='ignore')
     connector_type: str
@@ -66,3 +80,5 @@ class Settings(BaseSettings):
     elasticsearch: Elasticsearch = Elasticsearch()
     qdrant: Qdrant = Qdrant()
     ibm: IBM = IBM()
+    sqlite: Sqlite = Sqlite()
+    mysql: Mysql = Mysql()

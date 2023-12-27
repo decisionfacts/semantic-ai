@@ -7,4 +7,9 @@ Connectors
    :maxdepth: 2
    :hidden:
 
+**Un-Structure:**
    sharepoint
+
+**Structure:**
+   sqlite,
+   mysql
