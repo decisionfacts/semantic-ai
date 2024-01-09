@@ -137,7 +137,7 @@ async def index(settings: Settings | None = None):
 async def db_search(query, settings: Settings | None = None):
     settings = await _load_settings(settings)
     if not settings.connector_type:
-        raise "The connector type does not supporting"
+        raise "The connector type should not be empty"
 
     if settings.connector_type == constants.SQLITE:
         sqlite: Sqlite = settings.sqlite
@@ -159,7 +159,8 @@ async def db_search(query, settings: Settings | None = None):
     nlp_to_sql_obj = Prompt()
     nlp_to_sql = await nlp_to_sql_obj.nlp_to_sql(data_base=connection_obj,
                                                  normal_text=query)
-    data = json.loads(nlp_to_sql)
+    print(nlp_to_sql)
+    data = json.loads(f'{nlp_to_sql}')
     result = await connect.execution(data)
     return result
 

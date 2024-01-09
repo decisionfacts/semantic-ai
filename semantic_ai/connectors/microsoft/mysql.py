@@ -12,11 +12,7 @@ from semantic_ai.utils import sync_to_async
 
 logger = logging.getLogger(__name__)
 
-
-SQL_RESPONSE_TEMPLATE = """Generate natural language information based {question} and {response}.
-
-Add currency symbol in the prefix if you find for amount, net profit, gross profit or revenue based on this {currency}
-"""
+SQL_RESPONSE_TEMPLATE = """Generate natural language information based {question} and {response}."""
 
 
 class Mysql(BaseSqlConnector):
@@ -42,10 +38,11 @@ class Mysql(BaseSqlConnector):
 
     async def mysql_client(self):
         try:
-            return mysql.connector.connect(user=self.user,
-                                           password=self.password,
-                                           host=self.host,
-                                           database=self.database)
+            return await sync_to_async(mysql.connector.connect,
+                                       user=self.user,
+                                       password=self.password,
+                                       host=self.host,
+                                       database=self.database)
 
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -62,12 +59,11 @@ class Mysql(BaseSqlConnector):
         try:
             query = data.get('SQLQuery')
             question = data.get('Question')
-            currency = data.get('Currency')
             conn = await self.mysql_client()
-            curr = conn.cursor()
-            curr.execute(query)
+            curr = await sync_to_async(conn.cursor)
+            await sync_to_async(curr.execute, query)
             labels = [description[0] for description in curr.description]
-            response = curr.fetchall()
+            response = await sync_to_async(curr.fetchall)
             curr.close()
             resp = {
                 'query': question,
@@ -76,7 +72,7 @@ class Mysql(BaseSqlConnector):
             if not response:
                 return resp
 
-            template = SQL_RESPONSE_TEMPLATE.format(question=question, response=response, currency=currency)
+            template = SQL_RESPONSE_TEMPLATE.format(question=question, response=response)
             openai_res = Openai()
             llm = await openai_res.llm_model()
             llm_result = await llm._agenerate(prompts=[template])
@@ -98,5 +94,3 @@ class Mysql(BaseSqlConnector):
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Sorry! Internal server error while executing query."
             )
-
-

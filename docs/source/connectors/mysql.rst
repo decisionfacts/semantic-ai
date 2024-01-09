@@ -1,7 +1,7 @@
 MYSQL
 ======
 
-.. figure:: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmvZum7UQzH7A7I6M-f4Rjdth_UEf4i6_0SA&usqp=CAU
+.. figure:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/logo/mysql.png?raw=true
    :alt: Logo
    :align: left
    :width: 100px
@@ -36,15 +36,15 @@ This documents covers how to interact with Mysql database using our library.
     from semantic_ai.connectors import Mysql
 
         conn = Mysql(
-                    host='',
-                    user='',
-                    password='',
-                    database='',
-                    port=""
+                    host='<host>',
+                    user='<user_name>',
+                    password='<password>',
+                    database='<database>',
+                    port="<6033>" # it's default port
                     )
         cursor = await conn.connect_db()
 
-**To create natural language processing for normal text**
+**To generate the sql query from NLP text**
 
 .. code-block:: python
 

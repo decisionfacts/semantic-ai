@@ -1,11 +1,11 @@
 SQLITE
 ======
 
-.. figure:: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDlMIPeUYeHYEWmS0hX5Qt3WrbA-wVvk2nrw&usqp=CAU
+.. figure:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/logo/Sqlite.jpeg?raw=true
    :alt: Logo
    :align: left
    :width: 100px
-   :target: https://www.office.com/
+
 
 SQLite is an in-process library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine.
 SQLite is an embedded SQL database engine. Unlike most other SQL databases, SQLite does not have a separate server process. SQLite reads and writes directly to ordinary disk files.

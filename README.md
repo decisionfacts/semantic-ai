@@ -138,13 +138,18 @@ import semantic_ai
 ### 2. The database connection  
 
 #### Sqlite:
+```
+from semantic_ai.connectors import Sqlite
+
 file_path= <database_file_path>
 
 sql = Sqlite(sql_path=file_path)
-
+```
 
 #### Mysql:
 ```
+from semantic_ai.connectors import Mysql
+
 sql = Mysql(
     host=<host_name>,
     user=<user_name>,

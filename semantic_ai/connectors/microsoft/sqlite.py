@@ -14,8 +14,6 @@ logger = logging.getLogger(__name__)
 
 
 SQL_RESPONSE_TEMPLATE = """Generate natural language information based {question} and {response}.
-
-Add currency symbol in the prefix if you find for amount, net profit, gross profit or revenue based on this {currency}
 """
 
 
@@ -46,7 +44,6 @@ class Sqlite(BaseSqlConnector):
         try:
             query = data.get('SQLQuery')
             question = data.get('Question')
-            currency = data.get('Currency')
             conn = sqlite3.connect(self.sql_path)
             curr = conn.execute(query)
             labels = [description[0] for description in curr.description]
@@ -58,7 +55,7 @@ class Sqlite(BaseSqlConnector):
             if not response:
                 return resp
 
-            template = SQL_RESPONSE_TEMPLATE.format(question=question, response=response, currency=currency)
+            template = SQL_RESPONSE_TEMPLATE.format(question=question, response=response)
             openai_res = Openai()
             llm = await openai_res.llm_model()
             llm_result = await llm._agenerate(prompts=[template])

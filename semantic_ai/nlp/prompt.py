@@ -12,13 +12,12 @@ from semantic_ai.llm import Openai
 logger = logging.getLogger(__name__)
 
 SQL_DEFAULT_TEMPLATE = """Given an input question, first create a syntactically correct {dialect} working query to run,
- then look at the results of the query and return the response from the DATABASE and format amount with currency type 
- and give me as JSON response. Do not generate response from outside of the context.	
+ then look at the results of the query and return the response from the DATABASE and give me as JSON response.
+ Do not generate response from outside of the context.	
 Use the following json format:
 
 Question: "Question here",
 SQLQuery: "SQL Query to run",
-Currency: "Get currency type based on Curreny column in SQL table"
 Answer: "Final answer here"
 
 
@@ -30,7 +29,7 @@ If someone asks for the table, they really mean the table.
 
 Question: {input}
 
-Provide your SQLQuery, Currency and Answer in JSON form. Reply with only the answer in JSON form and include no other commentary:"""
+Provide your SQLQuery and Answer in JSON format. Reply with only the answer in JSON format and include no other commentary:"""
 
 
 class Prompt:
@@ -50,7 +49,7 @@ class Prompt:
     async def get_db_context(self, query: str, db):
         openai_llm = Openai()
         db_chain = SQLDatabaseChain.from_llm(openai_llm, db, verbose=True)
-        db_context = db_chain(query)
+        db_context = await sync_to_async(db_chain, query)
         db_context = db_context['result'].strip()
         return db_context
 

@@ -6,14 +6,14 @@ from semantic_ai.connectors import Mysql
 from semantic_ai.nlp.prompt import Prompt
 
 sql = Mysql(
-    host='',
-    user='',
-    password='',
-    database='',
-    port=""  # 3306 is default port
+    host='<host>',
+    user='<user_name>',
+    password='<password>',
+    database='<database_name>',
+    port="<port_number>"  # 3306 is default port
 )
-cur = asyncio.run(sql.connect_db())
-nlp_to_sql = asyncio.run(Prompt().nlp_to_sql(data_base=cur, normal_text=""))
+cur = await sql.connect_db()
+nlp_to_sql = await Prompt().nlp_to_sql(data_base=cur, normal_text="give me the total of on hole orders details")
 data = json.loads(nlp_to_sql)
-result = asyncio.run(sql.execution(data))
+result = await sql.execution(data)
 print(result)

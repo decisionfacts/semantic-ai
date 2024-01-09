@@ -66,6 +66,15 @@ class Mysql(BaseModel):
     port: str = os.getenv("MYSQL_PORT")
 
 
+class Sqlserver(BaseModel):
+    # model_config = SettingsConfigDict(env_prefix="MYSQL", case_sensitive=False)
+    host: str = os.getenv("SQLSERVER_HOST")
+    user: str = os.getenv("SQLSERVER_USER")
+    password: str = os.getenv("SQLSERVER_PASSWORD")
+    database: str = os.getenv("SQLSERVER_DATABASE")
+    driver: str = os.getenv("SQLSERVER_DRIVER")
+
+
 class Settings(BaseSettings):
     # model_config = ConfigDict(env_nested_delimiter='__', extra='ignore')
     connector_type: str
@@ -82,3 +91,4 @@ class Settings(BaseSettings):
     ibm: IBM = IBM()
     sqlite: Sqlite = Sqlite()
     mysql: Mysql = Mysql()
+    sqlserver: Sqlserver = Sqlserver()
