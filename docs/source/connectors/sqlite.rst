@@ -6,10 +6,8 @@ SQLITE
    :align: left
    :width: 100px
 
-
 SQLite is an in-process library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine.
 SQLite is an embedded SQL database engine. Unlike most other SQL databases, SQLite does not have a separate server process. SQLite reads and writes directly to ordinary disk files.
-
 
 This documents covers how to interact with SQLITE database using our library.
 
@@ -19,13 +17,11 @@ This documents covers how to interact with SQLITE database using our library.
 
 **Setup:**
 
-
 **To create a sqlite connection using path**
 
 .. code-block:: python
 
     SQLITE_SQL_PATH = '<DB_PATH>'
-
 
 .. code-block:: python
 
@@ -50,5 +46,3 @@ This documents covers how to interact with SQLITE database using our library.
 
     data = json.loads(prompt_res)
     result = sql.execution(data)
-
-
