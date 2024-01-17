@@ -12,8 +12,8 @@ sql = Mysql(
     database='<database_name>',
     port="<port_number>"  # 3306 is default port
 )
-cur = await sql.connect_db()
+cur = await sql.connect()
 nlp_to_sql = await Prompt().nlp_to_sql(data_base=cur, normal_text="give me the total of on hole orders details")
 data = json.loads(nlp_to_sql)
-result = await sql.execution(data)
+result = await sql.execute(data)
 print(result)

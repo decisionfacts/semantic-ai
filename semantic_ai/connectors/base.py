@@ -15,9 +15,9 @@ class BaseConnectors(abc.ABC):
 class BaseSqlConnector(abc.ABC):
 
     @abc.abstractmethod
-    async def connect_db(self):
+    async def connect(self):
         pass
 
     @abc.abstractmethod
-    async def execution(self, data: dict):
+    async def execute(self, data: dict):
         pass

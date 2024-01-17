@@ -1,14 +1,13 @@
 import json
-import sqlite3
 import logging
-
+import sqlite3
 
 from fastapi import HTTPException, status
 from langchain.utilities import SQLDatabase
 
+from semantic_ai.connectors.base import BaseSqlConnector
 from semantic_ai.llm import Openai
 from semantic_ai.utils import sync_to_async
-from semantic_ai.connectors.base import BaseSqlConnector
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +25,7 @@ class Sqlite(BaseSqlConnector):
     ):
         self.sql_path = sql_path
 
-    async def connect_db(self):
+    async def connect(self):
         try:
             db_path = f'sqlite:///{self.sql_path}'
             return await sync_to_async(SQLDatabase.from_uri, db_path)
@@ -40,7 +39,7 @@ class Sqlite(BaseSqlConnector):
                 detail="Sorry! Internal server error while executing query."
             )
 
-    async def execution(self, data: dict):
+    async def execute(self, data: dict):
         try:
             query = data.get('SQLQuery')
             question = data.get('Question')
@@ -58,7 +57,7 @@ class Sqlite(BaseSqlConnector):
             template = SQL_RESPONSE_TEMPLATE.format(question=question, response=response)
             openai_res = Openai(model_name_or_path="gpt-4-1106-preview")
             llm = await openai_res.llm_model()
-            llm_result = await llm._agenerate(prompts=[template])
+            llm_result = await llm.agenerate(prompts=[template])
             if not llm_result or not llm_result.generations:
                 return resp
 

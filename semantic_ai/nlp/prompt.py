@@ -1,13 +1,12 @@
 import logging
 
-from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
 from langchain.utilities import SQLDatabase
 from langchain_experimental.sql import SQLDatabaseChain
 
-
-from semantic_ai.utils import sync_to_async
 from semantic_ai.llm import Openai
+from semantic_ai.utils import sync_to_async
 
 logger = logging.getLogger(__name__)
 

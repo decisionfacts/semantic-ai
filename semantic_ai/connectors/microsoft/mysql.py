@@ -1,13 +1,13 @@
 import json
 import logging
+
 import mysql.connector
+from fastapi import HTTPException, status
+from langchain.utilities import SQLDatabase
 from mysql.connector import errorcode
 
-from semantic_ai.llm import Openai
 from semantic_ai.connectors.base import BaseSqlConnector
-from langchain.utilities import SQLDatabase
-from fastapi import HTTPException, status
-
+from semantic_ai.llm import Openai
 from semantic_ai.utils import sync_to_async
 
 logger = logging.getLogger(__name__)
@@ -16,14 +16,21 @@ SQL_RESPONSE_TEMPLATE = """Generate natural language information based {question
 
 
 class Mysql(BaseSqlConnector):
-    def __init__(self, host, user, password, database, port):
+    def __init__(
+            self,
+            host: str,
+            user: str,
+            password: str,
+            database: str,
+            port: int
+    ):
         self.host = host
         self.user = user
         self.password = password
         self.database = database
         self.port = port or 3306
 
-    async def connect_db(self):
+    async def connect(self):
         try:
             mysql_uri = f"mysql+pymysql://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
             return await sync_to_async(SQLDatabase.from_uri, mysql_uri)
@@ -38,11 +45,13 @@ class Mysql(BaseSqlConnector):
 
     async def mysql_client(self):
         try:
-            return await sync_to_async(mysql.connector.connect,
-                                       user=self.user,
-                                       password=self.password,
-                                       host=self.host,
-                                       database=self.database)
+            return await sync_to_async(
+                mysql.connector.connect,
+                user=self.user,
+                password=self.password,
+                host=self.host,
+                database=self.database
+            )
 
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -55,7 +64,7 @@ class Mysql(BaseSqlConnector):
                 logger.error(err)
                 raise err
 
-    async def execution(self, data: dict):
+    async def execute(self, data: dict):
         try:
             query = data.get('SQLQuery')
             question = data.get('Question')
@@ -75,7 +84,7 @@ class Mysql(BaseSqlConnector):
             template = SQL_RESPONSE_TEMPLATE.format(question=question, response=response)
             openai_res = Openai(model_name_or_path="gpt-4-1106-preview")
             llm = await openai_res.llm_model()
-            llm_result = await llm._agenerate(prompts=[template])
+            llm_result = await llm.agenerate(prompts=[template])
             if not llm_result or not llm_result.generations:
                 return resp
 
