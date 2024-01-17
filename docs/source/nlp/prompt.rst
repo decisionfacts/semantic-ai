@@ -1,5 +1,5 @@
 Natural Language Processing
-======
+===========================
 
 .. figure:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/logo/NLP.png?raw=true
    :alt: Logo

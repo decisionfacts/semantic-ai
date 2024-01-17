@@ -1,5 +1,5 @@
 MYSQL
-======
+=====
 
 .. figure:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/logo/mysql.png?raw=true
    :alt: Logo
