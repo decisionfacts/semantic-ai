@@ -1,7 +1,7 @@
 Natural Language Processing
 ======
 
-.. figure:: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuqJW1cosMDRjkXvBnJ8eWZp0q0xT2nG5tpA&usqp=CAU
+.. figure:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/logo/NLP.png?raw=true
    :alt: Logo
    :align: left
    :width: 100px

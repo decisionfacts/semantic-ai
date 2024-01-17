@@ -31,7 +31,9 @@ def requirements():
         "tiktoken==0.4.0",
         "ibm-watson-machine-learning==1.0.327",
         "langchain-experimental==0.0.24",
-        "python-dotenv==1.0.0"
+        "python-dotenv==1.0.0",
+        "mysql==15.1",
+        "pyodbc == 5.0.1"
     ]
 
 
