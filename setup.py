@@ -32,8 +32,8 @@ def requirements():
         "ibm-watson-machine-learning==1.0.327",
         "langchain-experimental==0.0.24",
         "python-dotenv==1.0.0",
-        "mysql==15.1",
-        "pyodbc == 5.0.1"
+        "mysql-connector-python==8.3.0",
+        "pyodbc==5.0.1"
     ]
 
 

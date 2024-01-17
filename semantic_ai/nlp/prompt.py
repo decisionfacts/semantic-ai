@@ -46,7 +46,8 @@ class Prompt:
             prompt = self.prompt
         return LLMChain(llm=await openai_llm.llm_model(), prompt=prompt)
 
-    async def get_db_context(self, query: str, db):
+    @staticmethod
+    async def get_db_context(query: str, db):
         openai_llm = Openai(model_name_or_path="gpt-4-1106-preview")
         db_chain = SQLDatabaseChain.from_llm(openai_llm, db, verbose=True)
         db_context = await sync_to_async(db_chain, query)

@@ -15,4 +15,5 @@ ibm-watson-machine-learning==1.0.327
 langchain-experimental==0.0.24
 fastapi==0.95.1
 python-dotenv==1.0.0
+mysql-connector-python==8.3.0
 pyodbc==5.0.1
