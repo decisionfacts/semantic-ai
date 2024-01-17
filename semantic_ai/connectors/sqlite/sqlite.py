@@ -2,12 +2,14 @@ import json
 import logging
 import sqlite3
 
-from fastapi import HTTPException, status
+
 from langchain.utilities import SQLDatabase
 
 from semantic_ai.connectors.base import BaseSqlConnector
 from semantic_ai.llm import Openai
 from semantic_ai.utils import sync_to_async
+from sqlalchemy.exc import OperationalError
+from semantic_ai.connectors.exceptions import ConnectorConfigError
 
 logger = logging.getLogger(__name__)
 
@@ -30,14 +32,12 @@ class Sqlite(BaseSqlConnector):
             db_path = f'sqlite:///{self.sql_path}'
             return await sync_to_async(SQLDatabase.from_uri, db_path)
 
-        except HTTPException as ex:
-            raise ex
+        except OperationalError as ex:
+            logger.error(f"Error connecting to the database:", exc_info=ex)
+            raise ConnectorConfigError(f"Error connecting to the database")
         except Exception as ex:
-            logger.error('Search query exception => ', exc_info=ex)
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Sorry! Internal server error while executing query."
-            )
+            logger.error('Error connecting to the database => ', exc_info=ex)
+            raise ConnectorConfigError(f"Error connecting to the database")
 
     async def execute(self, data: dict):
         try:
@@ -71,7 +71,4 @@ class Sqlite(BaseSqlConnector):
             return resp
         except Exception as ex:
             logger.error('Search query exception => ', exc_info=ex)
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Sorry! Internal server error while executing query."
-            )
+            raise ConnectorConfigError(f"Error connecting to the database")

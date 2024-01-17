@@ -34,6 +34,7 @@ def requirements():
         "python-dotenv==1.0.0",
         "mysql-connector-python==8.3.0",
         "pyodbc==5.0.1"
+        "SQLAlchemy==2.0.23"
     ]
 
 

@@ -2,12 +2,13 @@ import json
 import logging
 
 import mysql.connector
-from fastapi import HTTPException, status
 from langchain.utilities import SQLDatabase
 from mysql.connector import errorcode
 
 from semantic_ai.connectors.base import BaseSqlConnector
+from semantic_ai.connectors.exceptions import ConnectorConfigError
 from semantic_ai.llm import Openai
+from sqlalchemy.exc import OperationalError
 from semantic_ai.utils import sync_to_async
 
 logger = logging.getLogger(__name__)
@@ -34,14 +35,13 @@ class Mysql(BaseSqlConnector):
         try:
             mysql_uri = f"mysql+pymysql://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
             return await sync_to_async(SQLDatabase.from_uri, mysql_uri)
-        except HTTPException as ex:
-            raise ex
+
+        except OperationalError as ex:
+            logger.error(f"Error connecting to the database:", exc_info=ex)
+            raise ConnectorConfigError(f"Error connecting to the database")
         except Exception as ex:
             logger.error('Search query exception => ', exc_info=ex)
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Sorry! Internal server error while executing query."
-            )
+            raise ConnectorConfigError(f"Error connecting to the database")
 
     async def mysql_client(self):
         try:
@@ -56,13 +56,13 @@ class Mysql(BaseSqlConnector):
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
                 logger.error("Something is wrong with your user name or password")
-                raise "Something is wrong with your user name or password"
+                raise ConnectorConfigError("Something is wrong with your user name or password")
             elif err.errno == errorcode.ER_BAD_DB_ERROR:
                 logger.error("Database does not exist")
-                raise "Database does not exist"
+                raise ConnectorConfigError("Database does not exist")
             else:
                 logger.error(err)
-                raise err
+                raise ConnectorConfigError(err)
 
     async def execute(self, data: dict):
         try:
@@ -99,7 +99,5 @@ class Mysql(BaseSqlConnector):
 
         except Exception as ex:
             logger.error('Search query exception => ', exc_info=ex)
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Sorry! Internal server error while executing query."
-            )
+            raise ConnectorConfigError(f"Error search query exception")
+

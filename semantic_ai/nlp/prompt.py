@@ -63,4 +63,4 @@ class Prompt:
             }
             return await sync_to_async(chain.run, params)
         except Exception as ex:
-            logger.info(f"NLP modal failed to initiate {ex}")
+            raise f"Error search query exception"

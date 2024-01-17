@@ -1,0 +1,2 @@
+class ConnectorConfigError(Exception):
+    pass
