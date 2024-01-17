@@ -7,7 +7,6 @@ Natural Language Processing
    :width: 100px
    :target: https://www.office.com/
 
-
 Natural language processing (NLP) is a machine learning technology that gives computers the ability to interpret,
 manipulate, and comprehend human language.
 
@@ -20,7 +19,12 @@ the model generate the intended output. This interaction can be in the form of a
 
 .. code-block:: python
 
-        async def nlp_to_sql(self, data_base: SQLDatabase, normal_text: str, prompt: str = None):
+    async def nlp_to_sql(
+        self,
+        data_base: SQLDatabase,
+        normal_text: str,
+        prompt: str = None
+   ):
 
 
 The `nlp_to_sql()` function is used for generate the sql query from the normal text. It's return the sql response

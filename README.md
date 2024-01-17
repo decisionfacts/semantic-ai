@@ -55,7 +55,6 @@ LLM__MODEL="<llm_model>" # llama, openai
 LLM__MODEL_NAME_OR_PATH="" # model name
 OPENAI_API_KEY="<openai_api_key>" # if using openai
 
-
 # SQL
 SQLITE_SQL_PATH="<database_path>" # sqlit db path
 
@@ -119,15 +118,16 @@ SCOPE = 'https://graph.microsoft.com/.default'  # scope
 HOST_NAME = "<tenant_name>.sharepoint.com"  # for example 'contoso.sharepoint.com'
 
 # Sharepoint object creation
-connection = Sharepoint(client_id=CLIENT_ID,
-                        client_secret=CLIENT_SECRET,
-                        tenant_id=TENANT_ID,
-                        host_name=HOST_NAME,
-                        scope=SCOPE)
+connection = Sharepoint(
+    client_id=CLIENT_ID,
+    client_secret=CLIENT_SECRET,
+    tenant_id=TENANT_ID,
+    host_name=HOST_NAME,
+    scope=SCOPE
+)
 ```
 
 # Structure
-
 
 ### 1. Import the module
 ```python
@@ -157,17 +157,13 @@ sql = Mysql(
     database=<database>,
     port=<port_number>  # 3306 is default port
 )
-
 ```
-
 
 ### 3. To generate the answer from db using retrieval LLM model.
 ```
 query = ""
 search_obj = await semantic_ai.db_search(query=query)
-
 ```
-
 
 ## Run in the server
 ```shell

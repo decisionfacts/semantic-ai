@@ -7,8 +7,6 @@ MYSQL
    :width: 100px
    :target: https://www.office.com/
 
-
-
 This documents covers how to interact with Mysql database using our library.
 
 **Pre-requisites:**
@@ -16,7 +14,6 @@ This documents covers how to interact with Mysql database using our library.
     Please make sure the credentials of Mysql DB.
 
 **Setup:**
-
 
 **To create a mysql connection using credentials**
 
@@ -30,19 +27,18 @@ This documents covers how to interact with Mysql database using our library.
     MYSQL_DATABASE='<database>'
     MYSQL_PORT='<port>'
 
-
 .. code-block:: python
 
     from semantic_ai.connectors import Mysql
 
-        conn = Mysql(
-                    host='<host>',
-                    user='<user_name>',
-                    password='<password>',
-                    database='<database>',
-                    port="<6033>" # it's default port
-                    )
-        cursor = await conn.connect_db()
+    conn = Mysql(
+        host='<host>',
+        user='<user_name>',
+        password='<password>',
+        database='<database>',
+        port="<6033>" # it's default port
+    )
+    cursor = await conn.connect_db()
 
 **To generate the sql query from NLP text**
 
@@ -59,6 +55,3 @@ This documents covers how to interact with Mysql database using our library.
 
     data = json.loads(prompt_res)
     result = sql.execution(data)
-
-
-
