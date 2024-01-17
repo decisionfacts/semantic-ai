@@ -41,13 +41,14 @@ class Prompt:
         )
 
     async def get_llm_chain(self, prompt: str = None):
-        openai_llm = Openai()
+        openai_llm = Openai(model_name_or_path="gpt-4-1106-preview")
         if not prompt:
             prompt = self.prompt
         return LLMChain(llm=await openai_llm.llm_model(), prompt=prompt)
 
-    async def get_db_context(self, query: str, db):
-        openai_llm = Openai()
+    @staticmethod
+    async def get_db_context(query: str, db):
+        openai_llm = Openai(model_name_or_path="gpt-4-1106-preview")
         db_chain = SQLDatabaseChain.from_llm(openai_llm, db, verbose=True)
         db_context = await sync_to_async(db_chain, query)
         db_context = db_context['result'].strip()
