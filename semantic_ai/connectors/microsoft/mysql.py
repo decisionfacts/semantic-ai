@@ -73,7 +73,7 @@ class Mysql(BaseSqlConnector):
                 return resp
 
             template = SQL_RESPONSE_TEMPLATE.format(question=question, response=response)
-            openai_res = Openai()
+            openai_res = Openai(model_name_or_path="gpt-4-1106-preview")
             llm = await openai_res.llm_model()
             llm_result = await llm._agenerate(prompts=[template])
             if not llm_result or not llm_result.generations:
