@@ -15,5 +15,5 @@ sql = Mysql(
 cur = await sql.connect()
 nlp_to_sql = await Prompt().nlp_to_sql(data_base=cur, normal_text="give me the total of on hole orders details")
 data = json.loads(nlp_to_sql)
-result = await sql.execute(data)
+result = await sql.execute(cur, data)
 print(result)

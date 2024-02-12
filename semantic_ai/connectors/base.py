@@ -19,5 +19,5 @@ class BaseSqlConnector(abc.ABC):
         pass
 
     @abc.abstractmethod
-    async def execute(self, data: dict):
+    async def execute(self, *args, **kwargs):
         pass

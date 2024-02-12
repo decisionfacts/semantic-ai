@@ -28,6 +28,10 @@ If someone asks for the table, they really mean the table.
 
 Question: {input}
 
+JSON Format:
+- Question: [Input here]
+- SQLQuery: [Generated Query]
+
 Provide your SQLQuery and Answer in JSON format. Reply with only the answer in JSON format and include no other commentary:"""
 
 
@@ -38,17 +42,15 @@ class Prompt:
             input_variables=["input", "table_info", "dialect"],
             template=SQL_DEFAULT_TEMPLATE
         )
+        self.openai_llm = Openai(model_name_or_path="gpt-3.5-turbo-1106")
 
     async def get_llm_chain(self, prompt: str = None):
-        openai_llm = Openai(model_name_or_path="gpt-4-1106-preview")
         if not prompt:
             prompt = self.prompt
-        return LLMChain(llm=await openai_llm.llm_model(), prompt=prompt)
+        return LLMChain(llm=await self.openai_llm.llm_model(), prompt=prompt)
 
-    @staticmethod
-    async def get_db_context(query: str, db):
-        openai_llm = Openai(model_name_or_path="gpt-4-1106-preview")
-        db_chain = SQLDatabaseChain.from_llm(openai_llm, db, verbose=True)
+    async def get_db_context(self, query: str, db):
+        db_chain = SQLDatabaseChain.from_llm(await self.openai_llm.llm_model(), db, verbose=True)
         db_context = await sync_to_async(db_chain, query)
         db_context = db_context['result'].strip()
         return db_context
@@ -56,6 +58,7 @@ class Prompt:
     async def nlp_to_sql(self, data_base: SQLDatabase, normal_text: str, prompt: str = None):
         try:
             chain = await self.get_llm_chain(prompt)
+            print(normal_text)
             params = {
                 'input': normal_text,
                 'table_info': await sync_to_async(data_base.get_table_info),

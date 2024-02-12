@@ -164,8 +164,11 @@ async def db_search(query, settings: Settings | None = None):
         data_base=connection_obj,
         normal_text=query
     )
-    data = json.loads(f'{nlp_to_sql}')
-    return await connect.execute(data)
+    nlp_to_sql = nlp_to_sql.replace("json", "").replace("```", "")
+    data = nlp_to_sql
+    if nlp_to_sql:
+        data = json.loads(nlp_to_sql)
+    return await connect.execute(connection_obj, data)
 
 
 async def search(settings: Settings | None = None) -> Search:

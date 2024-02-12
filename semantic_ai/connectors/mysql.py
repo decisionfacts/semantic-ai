@@ -4,7 +4,7 @@ import logging
 import mysql.connector
 from langchain.utilities import SQLDatabase
 from mysql.connector import errorcode
-
+from openai import AsyncOpenAI
 from semantic_ai.connectors.base import BaseSqlConnector
 from semantic_ai.exceptions import ConnectorError
 from semantic_ai.llm import Openai
@@ -30,6 +30,7 @@ class Mysql(BaseSqlConnector):
         self.password = password
         self.database = database
         self.port = port or 3306
+        self.client = AsyncOpenAI()
 
     async def connect(self):
         try:
@@ -64,16 +65,12 @@ class Mysql(BaseSqlConnector):
                 logger.error(err)
                 raise ConnectorError(err)
 
-    async def execute(self, data: dict):
+    async def execute(self, connection_obj, data: dict):
         try:
             query = data.get('SQLQuery')
             question = data.get('Question')
-            conn = await self.mysql_client()
-            curr = await sync_to_async(conn.cursor)
-            await sync_to_async(curr.execute, query)
-            labels = [description[0] async for description in curr.description]
-            response = await sync_to_async(curr.fetchall)
-            curr.close()
+            curr = await sync_to_async(connection_obj._execute, query)
+            response = curr
             resp = {
                 'query': question,
                 'result': "Sorry, I can't find the answer from the data base"
@@ -82,19 +79,22 @@ class Mysql(BaseSqlConnector):
                 return resp
 
             template = SQL_RESPONSE_TEMPLATE.format(question=question, response=response)
-            openai_res = Openai(model_name_or_path="gpt-4-1106-preview")
-            llm = await openai_res.llm_model()
-            llm_result = await llm.agenerate(prompts=[template])
-            if not llm_result or not llm_result.generations:
+            messages = [
+                {
+                    "role": "system",
+                    "content": template
+                }
+            ]
+            openai_res = await self.client.chat.completions.create(
+                model="gpt-3.5-turbo-1106",
+                messages=messages
+            )
+            llm_result = openai_res
+            if not llm_result:
                 return resp
-
-            async for generation in llm_result.generations:
-                async for result in generation:
-                    if result:
-                        resp['result'] = f'{resp.get("result")}\n {result.text}'
-                        resp['ref_type'] = 'table'
-                        resp['reference'] = json.dumps([dict(zip(labels, items)) for items in response])
-
+            resp['result'] = f'{llm_result.choices[0].message.content}'
+            resp['ref_type'] = 'table'
+            resp['reference'] = response
             return resp
 
         except Exception as ex:

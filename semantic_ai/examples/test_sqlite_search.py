@@ -12,6 +12,6 @@ conn = await (sql.connect())
 nlp_to_sql = await (Prompt().nlp_to_sql(data_base=conn,
                                         normal_text=""))
 data = json.loads(nlp_to_sql)
-result = await (sql.execute(data))
+result = await (sql.execute(conn, data))
 print(result)
 
