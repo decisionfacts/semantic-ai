@@ -1,3 +1,5 @@
+.. _ibm:
+
 IBM Watsonx LLM
 ===============
 

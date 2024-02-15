@@ -5,6 +5,10 @@ Embeddings
 
     There are lots of embedding model providers. Now we supported Huggingface and OpenAI models. Future will enable other embeddings model.
 
+**Available Embeddings**
+
+- :ref:`huggingface`
+- :ref:`openai-embed`
 
 .. toctree::
    :maxdepth: 2
