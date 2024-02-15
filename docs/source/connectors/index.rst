@@ -11,11 +11,7 @@ Connectors
 - :ref:`sqlite`
 
 
-
-**Coming Soon**
-
-- AWS S3
-- GCP storage
+**Coming Soon** (AWS S3, GCP storage)
 
 
 .. toctree::
