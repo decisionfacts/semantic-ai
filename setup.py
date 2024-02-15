@@ -18,7 +18,6 @@ def requirements():
         "langchain==0.0.336",
         "sentence-transformers==2.2.2",
         "df-extract==0.0.2.1",
-        "boto3~=1.21.20",
         "elasticsearch==8.8.2",
         "qdrant-client==1.4.0",
         "jq==1.4.0",
@@ -33,7 +32,7 @@ def requirements():
         "langchain-experimental==0.0.24",
         "python-dotenv==1.0.0",
         "mysql-connector-python==8.3.0",
-        "pyodbc==5.0.1"
+        "pyodbc==5.0.1",
         "SQLAlchemy==2.0.23"
     ]
 
