@@ -5,6 +5,7 @@ from langchain.prompts import PromptTemplate
 from langchain.utilities import SQLDatabase
 from langchain_experimental.sql import SQLDatabaseChain
 
+from semantic_ai.constants import DEFAULT_LLM_MODEL
 from semantic_ai.llm import Openai
 from semantic_ai.utils import sync_to_async
 
@@ -37,12 +38,13 @@ Provide your SQLQuery and Answer in JSON format. Reply with only the answer in J
 
 class Prompt:
 
-    def __init__(self):
+    def __init__(self, llm_model: str | None = None):
+        self.model_name = llm_model or DEFAULT_LLM_MODEL
         self.prompt = PromptTemplate(
             input_variables=["input", "table_info", "dialect"],
             template=SQL_DEFAULT_TEMPLATE
         )
-        self.openai_llm = Openai(model_name_or_path="gpt-3.5-turbo-1106")
+        self.openai_llm = Openai(model_name_or_path=self.model_name)
 
     async def get_llm_chain(self, prompt: str = None):
         if not prompt:
@@ -58,7 +60,6 @@ class Prompt:
     async def nlp_to_sql(self, data_base: SQLDatabase, normal_text: str, prompt: str = None):
         try:
             chain = await self.get_llm_chain(prompt)
-            print(normal_text)
             params = {
                 'input': normal_text,
                 'table_info': await sync_to_async(data_base.get_table_info),

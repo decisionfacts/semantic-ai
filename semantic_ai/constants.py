@@ -35,6 +35,8 @@ LLM_LIST = [
     "openai"
 ]
 
+DEFAULT_LLM_MODEL = "gpt-3.5-turbo-1106"
+
 DEFAULT_PROMPT = '''Context: {context}
 
 Based on Context provide me answer for following question

@@ -1,14 +1,14 @@
-import json
 import logging
 
 import mysql.connector
 from langchain.utilities import SQLDatabase
 from mysql.connector import errorcode
 from openai import AsyncOpenAI
-from semantic_ai.connectors.base import BaseSqlConnector
-from semantic_ai.exceptions import ConnectorError
-from semantic_ai.llm import Openai
 from sqlalchemy.exc import OperationalError
+
+from semantic_ai.connectors.base import BaseSqlConnector
+from semantic_ai.constants import DEFAULT_LLM_MODEL
+from semantic_ai.exceptions import ConnectorError
 from semantic_ai.utils import sync_to_async
 
 logger = logging.getLogger(__name__)
@@ -65,7 +65,7 @@ class Mysql(BaseSqlConnector):
                 logger.error(err)
                 raise ConnectorError(err)
 
-    async def execute(self, connection_obj, data: dict):
+    async def execute(self, connection_obj, data: dict, llm_model: str = DEFAULT_LLM_MODEL):
         try:
             query = data.get('SQLQuery')
             question = data.get('Question')
@@ -86,7 +86,7 @@ class Mysql(BaseSqlConnector):
                 }
             ]
             openai_res = await self.client.chat.completions.create(
-                model="gpt-3.5-turbo-1106",
+                model=llm_model,
                 messages=messages
             )
             llm_result = openai_res

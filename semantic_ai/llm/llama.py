@@ -1,8 +1,8 @@
-import torch
 import logging
 
-from transformers import pipeline, AutoTokenizer, TextStreamer, StoppingCriteria, StoppingCriteriaList
+import torch
 from langchain import HuggingFacePipeline
+from transformers import pipeline, AutoTokenizer, TextStreamer, StoppingCriteria, StoppingCriteriaList
 
 from semantic_ai.llm.base import BaseLLM
 
@@ -54,7 +54,6 @@ class Llama(BaseLLM):
             # gptq_model = exllama_set_max_input_length(gptq_model, 4096)
             gptq_model = exllama_set_max_input_length(gptq_model, 8192)
             gptq_model.eval()
-            print(f"Model loaded on {device}")
             _pipe = pipeline("text-generation",
                              model=gptq_model,
                              tokenizer=tokenizer,
