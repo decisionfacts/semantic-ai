@@ -10,6 +10,18 @@ RAG architectures have been applied to various tasks in natural language process
 
 `DecisionFacts <https://decisionfacts.ai>`_ open-sourced RAG library - `Semantic AI <https://github.com/decisionfacts/semantic-ai>`_ is asynchronous framework to construct a knowledge base by indexing content into a Vector Database. The vector search APIs retrieve vector indexes from the database using cosine similarities/relevancy. The Large Language Model (LLM) then synthesizes summaries of the vector retrievals, presenting them as responses.
 
+**Semantic AI - Indexer Architecture**
+
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/DF-Semantic-Indexer.png?raw=true
+    :alt: Logo
+   :align: center
+   :width: 750px
+   :height: 550px
+
+**Semantic AI - Search Architecture**
+
+
+
 
 
 
