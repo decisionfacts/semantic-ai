@@ -90,7 +90,6 @@ class QdrantIndexer(BaseIndexer):
         self.metadata_payload_key = metadata_payload_key
         self.distance_strategy = distance_strategy
         self.vector_name = vector_name
-        self.kwargs = kwargs
 
         self.client = QdrantClient(
             location=self.location,
@@ -115,8 +114,7 @@ class QdrantIndexer(BaseIndexer):
             content_payload_key=self.content_payload_key,
             metadata_payload_key=self.metadata_payload_key,
             distance_strategy=self.distance_strategy,
-            vector_name=self.vector_name,
-            **self.kwargs
+            vector_name=self.vector_name
         )
 
     @staticmethod
@@ -169,8 +167,7 @@ class QdrantIndexer(BaseIndexer):
                             embedding=self.embeddings,
                             url=self.url,
                             api_key=self.api_key,
-                            collection_name=self.collection_name,
-                            **self.kwargs
+                            collection_name=self.collection_name
                         )
                     except Exception as ex:
                         print(f"{ex}")
@@ -183,8 +180,7 @@ class QdrantIndexer(BaseIndexer):
                                 embedding=self.embeddings,
                                 url=self.url,
                                 api_key=self.api_key,
-                                collection_name=self.collection_name,
-                                **self.kwargs
+                                collection_name=self.collection_name
                             )
                 except Exception as ex:
                     print(f"{ex}")

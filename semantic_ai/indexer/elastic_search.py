@@ -1,17 +1,21 @@
 import asyncio
 import os
+
+import aiofiles
+from aiopath import AsyncPath
+
 from typing import (
     Optional
 )
 
-from aiopath import AsyncPath
-from elasticsearch import Elasticsearch
 from langchain.embeddings.base import Embeddings
-from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from langchain.vectorstores import ElasticsearchStore
+from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 
 from semantic_ai.indexer.base import BaseIndexer
 from semantic_ai.utils import file_process, check_isfile, iter_to_aiter, sync_to_async
+
+from elasticsearch import Elasticsearch
 
 
 class ElasticsearchIndexer(BaseIndexer):
@@ -25,8 +29,7 @@ class ElasticsearchIndexer(BaseIndexer):
             index_name: str,
             embedding: Optional[Embeddings] = HuggingFaceEmbeddings(),
             verify_certs: bool = True,
-            es_api_key: Optional[str] = None,
-            **kwargs
+            es_api_key: Optional[str] = None
     ):
         super().__init__()
         self.url = url
@@ -36,12 +39,10 @@ class ElasticsearchIndexer(BaseIndexer):
         self.embeddings = embedding
         self.verify_certs = verify_certs
         self.es_api_key = es_api_key
-        self.kwargs = kwargs
 
         self.es_connection = Elasticsearch(self.url,
                                            basic_auth=(self.es_user, self.es_password),
-                                           verify_certs=self.verify_certs,
-                                           **kwargs
+                                           verify_certs=self.verify_certs
                                            )
 
     async def create(self) -> ElasticsearchStore:
@@ -49,8 +50,7 @@ class ElasticsearchIndexer(BaseIndexer):
             embedding=self.embeddings,
             index_name=f"{self.index_name}",
             es_connection=self.es_connection,
-            es_api_key=self.es_api_key,
-            **self.kwargs
+            es_api_key=self.es_api_key
         )
         return obj
 
@@ -103,8 +103,7 @@ class ElasticsearchIndexer(BaseIndexer):
                             documents=documents,
                             embedding=self.embeddings,
                             index_name=self.index_name,
-                            es_connection=self.es_connection,
-                            **self.kwargs
+                            es_connection=self.es_connection
 
                         )
                 except Exception as ex:
@@ -117,8 +116,7 @@ class ElasticsearchIndexer(BaseIndexer):
                                 documents=docs,
                                 embedding=self.embeddings,
                                 index_name=self.index_name,
-                                es_connection=self.es_connection,
-                                **self.kwargs
+                                es_connection=self.es_connection
                             )
                 except Exception as ex:
                     print(f"{ex}")
