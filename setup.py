@@ -25,7 +25,6 @@ def requirements():
         "httpx==0.25.0",
         "pydantic==1.10.11",
         "fastapi==0.95.1",
-        "auto-gptq==0.5.0",
         "openai==1.2.0",
         "uvicorn==0.22.0",
         "tiktoken==0.4.0",

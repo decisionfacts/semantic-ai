@@ -42,14 +42,14 @@ class Llama(BaseLLM):
         model = LlamaForCausalLM.from_pretrained(self.model_name_or_path)
         tokenizer = LlamaTokenizer.from_pretrained(self.model_name_or_path)
         if not kwargs['torch_dtype']:
-            kwargs.pop("torch_dtype", torch.float16)
+            kwargs["torch_dtype"] = torch.float16
         if not kwargs['device_map']:
-            kwargs.pop("device_map", "auto")
+            kwargs["device_map"] = "auto"
         if kwargs['do_sample']:
-            kwargs.pop("do_sample", True)
+            kwargs["do_sample"] = True
         if not kwargs['max_length']:
-            kwargs.pop("max_length", 400)
-        self._pipe = transformers.pipeline(
+            kwargs["max_length"] = 400
+        self._pipe = pipeline(
             "text-generation",
             model=model,
             tokenizer=tokenizer,
@@ -60,64 +60,67 @@ class Llama(BaseLLM):
     async def llm_model(self):
         return self._pipe
 
-    class LlamaGptq(BaseLLM):
-
-        def __init__(self,
-                     *,
-                     model_name_or_path: str,
-                     **kwargs
-                     ):
-            self.model_name_or_path = model_name_or_path
-            device = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
-            tokenizer = AutoTokenizer.from_pretrained(self.model_name_or_path, use_fast=True)
-            if torch.cuda.is_available():
-                from auto_gptq import AutoGPTQForCausalLM, exllama_set_max_input_length
-
-                '''
-                add Stop_words to stop text generation on junk values
-                '''
-                stop_list = ['\n```\n']
-                stop_token_ids = [tokenizer(x)['input_ids'] for x in stop_list]
-                stop_token_ids = [torch.LongTensor(x).to(device) for x in stop_token_ids]
-                stop_criteria = KeywordsStoppingCriteria(stop_token_ids)
-                gptq_model = AutoGPTQForCausalLM.from_quantized(
-                    self.model_name_or_path,
-                    model_basename="model",
-                    use_safetensors=True,
-                    device_map='auto',
-                    pad_token_id=tokenizer.eos_token_id,
-                    inject_fused_attention=False,
-                    early_stopping=True,
-                    use_triton=False
-                )
-                gptq_model = torch.compile(gptq_model)
-                # gptq_model = exllama_set_max_input_length(gptq_model, 4096)
-                gptq_model = exllama_set_max_input_length(gptq_model, 8192)
-                gptq_model.eval()
-                self._pipe = pipeline("text-generation",
-                                      model=gptq_model,
-                                      tokenizer=tokenizer,
-                                      # torch_dtype=torch.float16,
-                                      torch_dtype="auto",
-                                      max_new_tokens=4096,
-                                      top_k=1,
-                                      temperature=0.1,
-                                      return_full_text=True,
-                                      top_p=0.5,
-                                      remove_invalid_values=True,
-                                      do_sample=True,
-                                      pad_token_id=tokenizer.eos_token_id,
-                                      eos_token_id=tokenizer.eos_token_id,
-                                      stopping_criteria=StoppingCriteriaList([stop_criteria]),
-                                      early_stopping=True,
-                                      clean_up_tokenization_spaces=True,
-                                      repetition_penalty=1.1,
-                                      streamer=TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True),
-                                      **kwargs
-                                      )
-                logger.info("LLM Model Loaded")
-            else:
-                raise ValueError(f"Cuda is not available. Please install cuda for this {self.model_name_or_path}")
-
-        async def llm_model(self):
-            return self._pipe
+    # class LlamaGptq(BaseLLM):
+    #
+    #     def __init__(self,
+    #                  *,
+    #                  model_name_or_path: str,
+    #                  **kwargs
+    #                  ):
+    #         self.model_name_or_path = model_name_or_path
+    #         device = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
+    #         tokenizer = AutoTokenizer.from_pretrained(self.model_name_or_path, use_fast=True)
+    #         if torch.cuda.is_available():
+    #             try:
+    #                 from auto_gptq import AutoGPTQForCausalLM, exllama_set_max_input_length
+    #             except ModuleNotFoundError as ex:
+    #                 raise ModuleNotFoundError(ex)
+    #
+    #             '''
+    #             add Stop_words to stop text generation on junk values
+    #             '''
+    #             stop_list = ['\n```\n']
+    #             stop_token_ids = [tokenizer(x)['input_ids'] for x in stop_list]
+    #             stop_token_ids = [torch.LongTensor(x).to(device) for x in stop_token_ids]
+    #             stop_criteria = KeywordsStoppingCriteria(stop_token_ids)
+    #             gptq_model = AutoGPTQForCausalLM.from_quantized(
+    #                 self.model_name_or_path,
+    #                 model_basename="model",
+    #                 use_safetensors=True,
+    #                 device_map='auto',
+    #                 pad_token_id=tokenizer.eos_token_id,
+    #                 inject_fused_attention=False,
+    #                 early_stopping=True,
+    #                 use_triton=False
+    #             )
+    #             gptq_model = torch.compile(gptq_model)
+    #             # gptq_model = exllama_set_max_input_length(gptq_model, 4096)
+    #             gptq_model = exllama_set_max_input_length(gptq_model, 8192)
+    #             gptq_model.eval()
+    #             self._pipe = pipeline("text-generation",
+    #                                   model=gptq_model,
+    #                                   tokenizer=tokenizer,
+    #                                   # torch_dtype=torch.float16,
+    #                                   torch_dtype="auto",
+    #                                   max_new_tokens=4096,
+    #                                   top_k=1,
+    #                                   temperature=0.1,
+    #                                   return_full_text=True,
+    #                                   top_p=0.5,
+    #                                   remove_invalid_values=True,
+    #                                   do_sample=True,
+    #                                   pad_token_id=tokenizer.eos_token_id,
+    #                                   eos_token_id=tokenizer.eos_token_id,
+    #                                   stopping_criteria=StoppingCriteriaList([stop_criteria]),
+    #                                   early_stopping=True,
+    #                                   clean_up_tokenization_spaces=True,
+    #                                   repetition_penalty=1.1,
+    #                                   streamer=TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True),
+    #                                   **kwargs
+    #                                   )
+    #             logger.info("LLM Model Loaded")
+    #         else:
+    #             raise ValueError(f"Cuda is not available. Please install cuda for this {self.model_name_or_path}")
+    #
+    #     async def llm_model(self):
+    #         return self._pipe
