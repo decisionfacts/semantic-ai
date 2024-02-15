@@ -1,5 +1,8 @@
 # Connectors
 SHARE_POINT = "sharepoint"
+SQLITE = 'sqlite'
+MYSQL = 'mysql'
+
 
 # Indexer
 QDRANT = "qdrant"
@@ -14,8 +17,11 @@ Llama = 'llama'
 OPENAI = "openai"
 IBM = 'ibm'
 
+
 CONNECTORS_LIST = [
-    "sharepoint"
+    "sharepoint",
+    "sqlite",
+    "mysql"
 ]
 
 INDEXER_LIST = [
@@ -28,6 +34,8 @@ LLM_LIST = [
     "llama",
     "openai"
 ]
+
+DEFAULT_LLM_MODEL = "gpt-3.5-turbo-1106"
 
 DEFAULT_PROMPT = '''Context: {context}
 

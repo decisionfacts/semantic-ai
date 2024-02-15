@@ -28,32 +28,43 @@ EXTRACTED_DIR_PATH= # default directory name 'extracted_dir'
 
 # Connector (SharePoint, S3, GCP Bucket, GDrive, Confluence etc.,)
 CONNECTOR_TYPE="connector_name" # sharepoint
-SHAREPOINT__CLIENT_ID="client_id"
-SHAREPOINT__CLIENT_SECRET="client_secret"
-SHAREPOINT__TENANT_ID="tenant_id"
-SHAREPOINT__HOST_NAME='<tenant_name>.sharepoint.com'
-SHAREPOINT__SCOPE='https://graph.microsoft.com/.default'
-SHAREPOINT__SITE_ID="site_id"
-SHAREPOINT__DRIVE_ID="drive_id"
-SHAREPOINT__FOLDER_URL="folder_url" # /My_folder/child_folder/
+SHAREPOINT_CLIENT_ID="client_id"
+SHAREPOINT_CLIENT_SECRET="client_secret"
+SHAREPOINT_TENANT_ID="tenant_id"
+SHAREPOINT_HOST_NAME='<tenant_name>.sharepoint.com'
+SHAREPOINT_SCOPE='https://graph.microsoft.com/.default'
+SHAREPOINT_SITE_ID="site_id"
+SHAREPOINT_DRIVE_ID="drive_id"
+SHAREPOINT_FOLDER_URL="folder_url" # /My_folder/child_folder/
 
 # Indexer
 INDEXER_TYPE="vector_db_name" # elasticsearch, qdrant
-ELASTICSEARCH__URL="elasticsearch_url" # give valid url
-ELASTICSEARCH__USER="elasticsearch_user" # give valid user
-ELASTICSEARCH__PASSWORD="elasticsearch_password" # give valid password
-ELASTICSEARCH__INDEX_NAME="index_name"
-ELASTICSEARCH__SSL_VERIFY="ssl_verify" # True or False
+ELASTICSEARCH_URL="elasticsearch_url" # give valid url
+ELASTICSEARCH_USER="elasticsearch_user" # give valid user
+ELASTICSEARCH_PASSWORD="elasticsearch_password" # give valid password
+ELASTICSEARCH_INDEX_NAME="index_name"
+ELASTICSEARCH_SSL_VERIFY="ssl_verify" # True or False
 
 # Qdrant
-QDRANT__URL="<qdrant_url>"
-QDRANT__INDEX_NAME="<index_name>"
-QDRANT__API_KEY="<apikey>"
+QDRANT_URL="<qdrant_url>"
+QDRANT_INDEX_NAME="<index_name>"
+QDRANT_API_KEY="<apikey>"
 
 # LLM
-LLM__MODEL="<llm_model>" # llama, openai
-LLM__MODEL_NAME_OR_PATH="" # model name
+LLM_MODEL="<llm_model>" # llama, openai
+LLM_MODEL_NAME_OR_PATH="" # model name
 OPENAI_API_KEY="<openai_api_key>" # if using openai
+
+# SQL
+SQLITE_SQL_PATH="<database_path>" # sqlit db path
+
+# MYSQL
+MYSQL_HOST="<host_name>" # localhost or Ip Address
+MYSQL_USER="<user_name>"
+MYSQL_PASSWORD="<password>"
+MYSQL_DATABASE="<database_name>"
+MYSQL_PORT="<port>" # default port is 3306
+
 ```
 Method 1:
     To load the .env file. Env file should have the credentials
@@ -72,6 +83,7 @@ from semantic_ai.config import Settings
 settings = Settings()
 ```
 
+# Un-Structure 
 ### 1. Import the module
 ```python
 import asyncio
@@ -106,12 +118,53 @@ SCOPE = 'https://graph.microsoft.com/.default'  # scope
 HOST_NAME = "<tenant_name>.sharepoint.com"  # for example 'contoso.sharepoint.com'
 
 # Sharepoint object creation
-connection = Sharepoint(client_id=CLIENT_ID,
-                        client_secret=CLIENT_SECRET,
-                        tenant_id=TENANT_ID,
-                        host_name=HOST_NAME,
-                        scope=SCOPE)
+connection = Sharepoint(
+    client_id=CLIENT_ID,
+    client_secret=CLIENT_SECRET,
+    tenant_id=TENANT_ID,
+    host_name=HOST_NAME,
+    scope=SCOPE
+)
 ```
+
+# Structure
+
+### 1. Import the module
+```python
+import asyncio
+import semantic_ai
+```
+
+### 2. The database connection  
+
+#### Sqlite:
+```
+from semantic_ai.connectors import Sqlite
+
+file_path= <database_file_path>
+
+sql = Sqlite(sql_path=file_path)
+```
+
+#### Mysql:
+```
+from semantic_ai.connectors import Mysql
+
+sql = Mysql(
+    host=<host_name>,
+    user=<user_name>,
+    password=<password>,
+    database=<database>,
+    port=<port_number>  # 3306 is default port
+)
+```
+
+### 3. To generate the answer from db using retrieval LLM model.
+```
+query = ""
+search_obj = await semantic_ai.db_search(query=query)
+```
+
 ## Run in the server
 ```shell
 $ semantic_ai serve -f .env
