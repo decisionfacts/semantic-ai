@@ -26,6 +26,4 @@ Library Documentation
    vector_indexer
    llm
    llm/index
-   nlp
-   nlp/index
    semantic_search

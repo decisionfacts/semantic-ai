@@ -8,5 +8,3 @@ Connectors
    :hidden:
 
    sharepoint
-   sqlite
-   mysql
