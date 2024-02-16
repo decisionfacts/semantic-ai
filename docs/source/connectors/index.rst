@@ -6,12 +6,15 @@ Connectors
 
 **Available Connectors**
 
-- :ref:`my-sql`
 - :ref:`sharepoint`
+- :ref:`my-sql`
 - :ref:`sqlite`
 
 
-**Coming Soon** (AWS S3, GCP storage)
+* GCP BigQuery (Coming Soon)
+* GCP Storage (Coming Soon)
+* AWS S3 (Coming Soon)
+* Azure DataLake (Coming Soon)
 
 
 .. toctree::
@@ -19,5 +22,5 @@ Connectors
    :hidden:
 
    sharepoint
-   sqlite
    mysql
+   sqlite
