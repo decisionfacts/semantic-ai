@@ -1,3 +1,5 @@
+.. _openai-embed:
+
 Open AI
 =======
 

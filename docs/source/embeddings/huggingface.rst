@@ -1,3 +1,5 @@
+.. _huggingface:
+
 Hugging Face 🤗
 ===============
 
