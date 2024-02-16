@@ -138,7 +138,7 @@ import semantic_ai
 ### 2. The database connection  
 
 #### Sqlite:
-```
+```python
 from semantic_ai.connectors import Sqlite
 
 file_path= <database_file_path>
@@ -147,7 +147,7 @@ sql = Sqlite(sql_path=file_path)
 ```
 
 #### Mysql:
-```
+```python
 from semantic_ai.connectors import Mysql
 
 sql = Mysql(
@@ -160,7 +160,7 @@ sql = Mysql(
 ```
 
 ### 3. To generate the answer from db using retrieval LLM model.
-```
+```python
 query = ""
 search_obj = await semantic_ai.db_search(query=query)
 ```
