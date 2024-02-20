@@ -77,11 +77,11 @@ class Sqlserver(BaseModel):
 
 class Settings(BaseSettings):
     # model_config = ConfigDict(env_nested_delimiter='__', extra='ignore')
-    connector_type: str
-    indexer_type: str
-    embedding_type: str
-    file_download_dir_path: str
-    extracted_dir_path: str
+    connector_type: str = os.getenv("CONNECTOR_TYPE")
+    indexer_type: str = os.getenv("INDEXER_TYPE")
+    embedding_type: str = os.getenv("EMBEDDING_TYPE")
+    file_download_dir_path: str = os.getenv("FILE_DOWNLOAD_DIR_PATH")
+    extracted_dir_path: str = os.getenv("EXTRACTED_DIR_PATH")
 
     embed: Embed = Embed()
     sharepoint: Sharepoint = Sharepoint()
