@@ -190,3 +190,9 @@ class QdrantIndexer(BaseIndexer):
                     print(f"{ex}")
         else:
             raise ValueError(f"Please give valid file or directory path.")
+
+    async def delete(self, index_name: str):
+        raise NotImplementedError
+
+    async def exists(self, index_name: str) -> bool:
+        raise NotImplementedError

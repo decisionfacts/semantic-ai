@@ -124,3 +124,20 @@ class ElasticsearchIndexer(BaseIndexer):
                     print(f"{ex}")
         else:
             raise ValueError(f"Please give valid file or directory path.")
+
+    async def exists(self, index_name: str) -> bool:
+        exist_index = await sync_to_async(
+            self.es_connection.indices.exists,
+            index=index_name
+        )
+        return exist_index
+
+    async def delete(self, index_name: str):
+        if await self.exists(index_name):
+            await sync_to_async(
+                self.es_connection.indices.delete,
+                index=index_name
+            )
+            return True
+        else:
+            return False
