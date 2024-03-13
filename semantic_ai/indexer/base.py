@@ -12,6 +12,10 @@ class BaseIndexer(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    async def exists(self, index_name: str):
+        pass
+
+    @abstractmethod
     async def delete(self, index_name: str):
         pass
 

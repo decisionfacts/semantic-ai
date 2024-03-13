@@ -193,3 +193,6 @@ class QdrantIndexer(BaseIndexer):
 
     async def delete(self, index_name: str):
         raise NotImplementedError
+
+    async def exists(self, index_name: str) -> bool:
+        raise NotImplementedError
