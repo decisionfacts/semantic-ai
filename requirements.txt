@@ -7,7 +7,6 @@ qdrant-client==1.4.0
 jq==1.4.1
 httpx==0.25.0
 pydantic==1.10.11
-auto-gptq==0.5.0
 uvicorn==0.22.0
 tiktoken==0.5.1
 ibm-watson-machine-learning==1.0.327

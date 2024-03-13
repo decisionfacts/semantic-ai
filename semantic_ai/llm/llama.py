@@ -1,81 +1,79 @@
+import asyncio
 import logging
+from typing import Any, Dict, Optional
 
 import torch
-from langchain import HuggingFacePipeline
-from transformers import pipeline, AutoTokenizer, TextStreamer, StoppingCriteria, StoppingCriteriaList
+from df_extract.utils import sync_to_async
+from transformers import (
+    pipeline,
+    LlamaForCausalLM,
+    LlamaTokenizer
+)
 
 from semantic_ai.llm.base import BaseLLM
+from semantic_ai.utils import _clear_cache
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
-class KeywordsStoppingCriteria(StoppingCriteria):
-    def __init__(self, keywords_ids: list):
-        print("stop_ids", keywords_ids)
-        self.stop_token_ids = keywords_ids
-
-    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
-        for stop_ids in self.stop_token_ids:
-            if torch.eq(input_ids[0][-len(stop_ids):], stop_ids).all():
-                return True
-        return False
+DEFAULT_DEVICE = ["cpu", "cuda", "auto"]
 
 
 class Llama(BaseLLM):
 
     def __init__(self,
                  *,
-                 model_name_or_path: str
+                 model_name_or_path: str,
+                 torch_dtype: str | torch.dtype = torch.float16,
+                 do_sample: bool = True,
+                 model_kwargs: Optional[Dict[str, Any]] = None,
+                 max_length: int = 400,
+                 device: str | None = None,
+                 **kwargs
                  ):
-        device = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
-        tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, use_fast=True)
+        self.model_name_or_path = model_name_or_path
+        self.do_sample = do_sample
+        self.max_length = max_length
+        self.device = device
+
+        if self.device and self.device not in DEFAULT_DEVICE:
+            raise ValueError(f"Only given the following device{DEFAULT_DEVICE}")
+        if not self.device:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if torch.cuda.is_available():
-            from auto_gptq import AutoGPTQForCausalLM, exllama_set_max_input_length
+            torch_dtype = torch.bfloat16
+        self.model = LlamaForCausalLM.from_pretrained(self.model_name_or_path,
+                                                      device_map=self.device,
+                                                      trust_remote_code=True,
+                                                      torch_dtype=torch_dtype,
+                                                      **kwargs)
+        self.tokenizer = LlamaTokenizer.from_pretrained(self.model_name_or_path,
+                                                        **kwargs)
+        self._pipe = pipeline(
+            "text-generation",
+            model=self.model,
+            tokenizer=self.tokenizer,
+            eos_token_id=self.tokenizer.eos_token_id,
+            torch_dtype=torch_dtype,
+            device_map=self.device,
+            model_kwargs=model_kwargs,
+            **kwargs
+        )
 
-            '''
-            add Stop_words to stop text generation on junk values
-            '''
-            stop_list = ['\n```\n']
-            stop_token_ids = [tokenizer(x)['input_ids'] for x in stop_list]
-            stop_token_ids = [torch.LongTensor(x).to(device) for x in stop_token_ids]
-            stop_criteria = KeywordsStoppingCriteria(stop_token_ids)
-            gptq_model = AutoGPTQForCausalLM.from_quantized(
-                model_name_or_path,
-                model_basename="model",
-                use_safetensors=True,
-                device_map='auto',
-                pad_token_id=tokenizer.eos_token_id,
-                inject_fused_attention=False,
-                early_stopping=True,
-                use_triton=False
-            )
-            gptq_model = torch.compile(gptq_model)
-            # gptq_model = exllama_set_max_input_length(gptq_model, 4096)
-            gptq_model = exllama_set_max_input_length(gptq_model, 8192)
-            gptq_model.eval()
-            _pipe = pipeline("text-generation",
-                             model=gptq_model,
-                             tokenizer=tokenizer,
-                             # torch_dtype=torch.float16,
-                             torch_dtype="auto",
-                             max_new_tokens=4096,
-                             top_k=1,
-                             temperature=0.1,
-                             return_full_text=True,
-                             top_p=0.5,
-                             remove_invalid_values=True,
-                             do_sample=True,
-                             pad_token_id=tokenizer.eos_token_id,
-                             eos_token_id=tokenizer.eos_token_id,
-                             stopping_criteria=StoppingCriteriaList([stop_criteria]),
-                             early_stopping=True,
-                             clean_up_tokenization_spaces=True,
-                             repetition_penalty=1.1,
-                             streamer=TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
-                             )
-            self._llm = HuggingFacePipeline(pipeline=_pipe)
-            logger.info("LLM Model Loaded")
+    async def llm_model(self, prompt):
+        asyncio.create_task(_clear_cache())
+        return await sync_to_async(self._pipe,
+                                   prompt,
+                                   do_sample=self.do_sample,
+                                   max_length=self.max_length,
+                                   eos_token_id=self.tokenizer.eos_token_id,
+                                   truncation=True
+                                   )
 
-    async def llm_model(self):
-        return self._llm
+    class LlamaGptq(BaseLLM):
+
+        def __init__(self):
+            pass
+
+        async def llm_model(self):
+            raise NotImplementedError
