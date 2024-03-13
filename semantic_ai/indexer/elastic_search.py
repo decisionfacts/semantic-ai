@@ -133,9 +133,9 @@ class ElasticsearchIndexer(BaseIndexer):
 
     async def delete(self, index_name: str):
         if await self.exists(index_name):
-            self.es_connection.indices.delete(
-                index=index_name
-            )
+            await sync_to_async(self.es_connection.indices.delete,
+                                index=index_name
+                                )
             return True
         else:
             return False
