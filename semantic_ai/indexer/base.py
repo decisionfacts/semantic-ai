@@ -10,3 +10,8 @@ class BaseIndexer(metaclass=ABCMeta):
     @abstractmethod
     async def index(self, *args, **kwargs):
         pass
+
+    @abstractmethod
+    async def delete(self, index_name: str):
+        pass
+
