@@ -18,3 +18,5 @@ mysql-connector-python~=8.2.0
 pyodbc==5.0.1
 SQLAlchemy==2.0.23
 furo==2024.1.29
+aiopath==0.6.11
+opensearch-py==2.6.0

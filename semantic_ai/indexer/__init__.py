@@ -1,5 +1,6 @@
 from semantic_ai.indexer.elastic_search import ElasticsearchIndexer
 from semantic_ai.indexer.qdrant import QdrantIndexer
+from semantic_ai.indexer.opensearch import OpensearchIndexer
 
 from semantic_ai.utils import get_dynamic_class
 from semantic_ai.constants import INDEXER_LIST
@@ -7,6 +8,7 @@ from semantic_ai.constants import INDEXER_LIST
 __all__ = [
     "ElasticsearchIndexer",
     "QdrantIndexer",
+    "OpensearchIndexer",
     "get_indexer"
 ]
 
