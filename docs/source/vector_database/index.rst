@@ -6,6 +6,7 @@ Vector Database
 
 - :ref:`elastic-search`
 - :ref:`qdrant`
+- :ref:`opensearch`
 
 
 .. toctree::
@@ -14,3 +15,4 @@ Vector Database
 
    elastic_search
    qdrant
+   opensearch

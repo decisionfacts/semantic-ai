@@ -7,6 +7,7 @@ MYSQL = 'mysql'
 # Indexer
 QDRANT = "qdrant"
 ELASTIC_SEARCH = "elasticsearch"
+OPENSEARCH="opensearch"
 
 # Default
 DEFAULT_FOLDER_NAME = "download_file_dir"
@@ -26,7 +27,8 @@ CONNECTORS_LIST = [
 
 INDEXER_LIST = [
     "elasticsearch",
-    "qdrant"
+    "qdrant",
+    "opensearch"
 ]
 
 LLM_LIST = [
