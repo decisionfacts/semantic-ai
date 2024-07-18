@@ -3,11 +3,11 @@
 OpenSearch
 ===========
 
-.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/logo/opensearch_logo_img.png?raw=true
+.. image:: https://github.com/decisionfacts/semantic-ai/blob/master/docs/source/_static/images/logo/opensearch-icon.png?raw=true
     :alt: Logo
-   :align: left
-   :width: 110px
-   :target: https://opensearch.org/
+    :align: left
+    :width: 110px
+    :target: https://opensearch.org/
 
 
 OpenSearch offers a flexible and scalable open-source approach for developing solutions tailored to data-intensive applications. Utilize its built-in performance, developer-friendly tools, and robust integrations for machine learning, data processing, and beyond to explore, enhance, and visualize your data effectively.
@@ -18,7 +18,7 @@ OpenSearch offers a flexible and scalable open-source approach for developing so
 
 .. code-block:: shell
 
-        docker run -d -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "OPENSEARCH_INITIAL_ADMIN_PASSWORD=<custom-admin-password>" opensearchproject/opensearch:latest
+    docker run -d -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "OPENSEARCH_INITIAL_ADMIN_PASSWORD=<custom-admin-password>" opensearchproject/opensearch:latest
 
 
 Once the opensearch instance is running, you can connect to it using the Opensearch URL and index name along with the embedding object to the constructor.
@@ -28,7 +28,7 @@ To Opensearch object creation
 .. code-block:: python
 
     from semantic_ai.indexer import OpenSearchIndexer
-      from semantic_ai.embeddings.huggingface import HFEmbeddings
+    from semantic_ai.embeddings.huggingface import HFEmbeddings
 
     embeddings = await HFEmbeddings().embed()
     open_search = await OpensearchIndexer(

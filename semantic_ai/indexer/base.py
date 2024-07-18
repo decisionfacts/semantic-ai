@@ -30,8 +30,6 @@ class BaseIndexer(metaclass=ABCMeta):
                             file_ext = path.suffix.lower()
                             _data = await file_process(file_ext=file_ext, file_path=file_path)
                             datas.append(_data)
-                        else:
-                            pass
                     await asyncio.sleep(1)
                     yield datas
                 else:
@@ -41,8 +39,6 @@ class BaseIndexer(metaclass=ABCMeta):
                             file_ext = path.suffix.lower()
                             _data = await file_process(file_ext=file_ext, file_path=file_path)
                             datas.append(_data)
-                        else:
-                            pass
                     yield datas
         else:
             raise ValueError(f"Please give valid file or directory path.")
