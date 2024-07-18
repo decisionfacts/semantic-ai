@@ -1,9 +1,12 @@
 import json
 import logging
+
+from aiopath import AsyncPath
+
 from semantic_ai.connectors import get_connectors
 from semantic_ai.indexer import get_indexer
 from semantic_ai.llm import get_llm
-from semantic_ai.config import Sharepoint, Elasticsearch, Settings, LLM, Qdrant, IBM, Sqlite, Mysql
+from semantic_ai.config import Sharepoint, Elasticsearch, Settings, LLM, Qdrant, IBM, Sqlite, Mysql, Opensearch
 from semantic_ai.utils import iter_to_aiter, make_dirs, generate_llama_simple_prompt_template
 from semantic_ai.extract import extract as df_extract
 from semantic_ai import constants
@@ -37,40 +40,42 @@ async def __index_obj_create(settings: Settings | None = None):
         if not settings.embedding_type:
             return await get_indexer(
                 settings.indexer_type,
-                url=elastic_search.url,
-                es_user=elastic_search.user,
-                es_password=elastic_search.password,
-                index_name=elastic_search.index_name,
-                verify_certs=elastic_search.ssl_verify
+                **elastic_search.dict()
             )
         else:
             _embed = await __embed_obj(settings.embedding_type, settings.embed.model_name)
             return await get_indexer(
                 settings.indexer_type,
-                url=elastic_search.url,
-                es_user=elastic_search.user,
-                es_password=elastic_search.password,
-                index_name=elastic_search.index_name,
-                verify_certs=elastic_search.ssl_verify,
-                embedding=_embed
+                embedding=_embed,
+                **elastic_search.dict()
             )
     elif settings.indexer_type == constants.QDRANT:
         qdrant: Qdrant = settings.qdrant
         if not settings.embedding_type:
             return await get_indexer(
                 settings.indexer_type,
-                url=qdrant.url,
-                api_key=qdrant.api_key,
-                index_name=qdrant.index_name
+                **qdrant.dict()
             )
         else:
             _embed = await __embed_obj(settings.embedding_type, settings.embed.model_name)
             return await get_indexer(
                 settings.indexer_type,
-                url=qdrant.url,
-                api_key=qdrant.api_key,
-                index_name=qdrant.index_name,
-                embedding=_embed
+                embedding=_embed,
+                **qdrant.dict()
+            )
+    elif settings.indexer_type == constants.OPENSEARCH:
+        opensearch: Opensearch = settings.opensearch
+        if not settings.embedding_type:
+            return await get_indexer(
+                settings.indexer_type,
+                **opensearch.dict()
+            )
+        else:
+            _embed = await __embed_obj(settings.embedding_type, settings.embed.model_name)
+            return await get_indexer(
+                settings.indexer_type,
+                embedding=_embed,
+                **opensearch.dict()
             )
 
 
@@ -122,8 +127,10 @@ async def index(settings: Settings | None = None):
 
     logger.info(f"Index starting")
     if settings.indexer_type:
+        _path = AsyncPath(settings.extracted_dir_path)
         extracted_output_dir = settings.extracted_dir_path
-        extracted_output_dir = await make_dirs(extracted_output_dir, constants.JSON_OUTPUT_DIR)
+        if await _path.is_dir():
+            extracted_output_dir = await make_dirs(extracted_output_dir, constants.JSON_OUTPUT_DIR)
         try:
             index_obj = await __index_obj_create(settings)
             await index_obj.index(extracted_output_dir)

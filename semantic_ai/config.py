@@ -1,9 +1,6 @@
 import os
 
-from pydantic import BaseModel, BaseSettings, ConfigDict
-
-
-# from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import BaseModel, BaseSettings
 
 
 class Sharepoint(BaseModel):
@@ -30,8 +27,16 @@ class Elasticsearch(BaseModel):
 class Qdrant(BaseModel):
     # model_config = ConfigDict(env_prefix="QDRANT", case_sensitive=False)
     url: str = os.getenv("QDRANT_URL")
-    api_key: str = os.getenv("QDRANT_INDEX_NAME")
-    index_name: str = os.getenv("QDRANT_API_KEY")
+    api_key: str = os.getenv("QDRANT_API_KEY")
+    index_name: str = os.getenv("QDRANT_INDEX_NAME")
+
+
+class Opensearch(BaseModel):
+    # model_config = ConfigDict(env_prefix="OPENSEARCH", case_sensitive=False)
+    url: str = os.getenv("OPENSEARCH_URL")
+    user: str = os.getenv("OPENSEARCH_USER")
+    password: str = os.getenv("OPENSEARCH_PASSWORD")
+    index_name: str = os.getenv("OPENSEARCH_INDEX_NAME")
 
 
 class LLM(BaseModel):
@@ -88,6 +93,7 @@ class Settings(BaseSettings):
     llm: LLM = LLM()
     elasticsearch: Elasticsearch = Elasticsearch()
     qdrant: Qdrant = Qdrant()
+    opensearch: Opensearch = Opensearch()
     ibm: IBM = IBM()
     sqlite: Sqlite = Sqlite()
     mysql: Mysql = Mysql()
