@@ -38,17 +38,23 @@ SHAREPOINT_DRIVE_ID="drive_id"
 SHAREPOINT_FOLDER_URL="folder_url" # /My_folder/child_folder/
 
 # Indexer
-INDEXER_TYPE="vector_db_name" # elasticsearch, qdrant
-ELASTICSEARCH_URL="elasticsearch_url" # give valid url
-ELASTICSEARCH_USER="elasticsearch_user" # give valid user
-ELASTICSEARCH_PASSWORD="elasticsearch_password" # give valid password
-ELASTICSEARCH_INDEX_NAME="index_name"
-ELASTICSEARCH_SSL_VERIFY="ssl_verify" # True or False
+INDEXER_TYPE="<vector_db_name>" # elasticsearch, qdrant, opensearch
+ELASTICSEARCH_URL="<elasticsearch_url>" # give valid url
+ELASTICSEARCH_USER="<elasticsearch_user>" # give valid user
+ELASTICSEARCH_PASSWORD="<elasticsearch_password>" # give valid password
+ELASTICSEARCH_INDEX_NAME="<index_name>"
+ELASTICSEARCH_SSL_VERIFY="<ssl_verify>" # True or False
 
 # Qdrant
 QDRANT_URL="<qdrant_url>"
 QDRANT_INDEX_NAME="<index_name>"
 QDRANT_API_KEY="<apikey>"
+
+# Opensearch
+OPENSEARCH_URL="<opensearch_url>"
+OPENSEARCH_USER="<opensearch_user>"
+OPENSEARCH_PASSWORD="<opensearch_password>"
+OPENSEARCH_INDEX_NAME="<index_name>"
 
 # LLM
 LLM_MODEL="<llm_model>" # llama, openai
