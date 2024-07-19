@@ -66,7 +66,7 @@ class OpensearchIndexer(BaseIndexer):
                             await OpenSearchVectorSearch.afrom_documents(
                                 opensearch_url=self.url,
                                 http_auth=(self.user, self.password),
-                                documents=documents,
+                                documents=docs,
                                 index_name=f"{self.index_name}",
                                 embedding=self.embedding,
                                 **self.kwargs
